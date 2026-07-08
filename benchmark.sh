@@ -14,7 +14,7 @@
 #        - メモリ  : sysbench memory
 #        - ストレージI/O : fio
 #        - ネットワーク  : iperf3
-#   5. GitHub用ディレクトリ (~/Laboratory-Data-FILE/日時/) へコピー
+#   5. GitHub用ディレクトリ (~/Laboratory-Data-File/日時/) へコピー
 #   6. git fetch → git pull → git add/commit → git push
 #
 # 使い方:
@@ -35,7 +35,7 @@ set -euo pipefail
 BASE_DIR="${HOME}/benchmark"
 
 # GitHubリポジトリのローカルパス (事前に git clone 済みであること)
-GITHUB_REPO_DIR="${HOME}/Laboratory-Data-FILE"
+GITHUB_REPO_DIR="${HOME}/Laboratory-Data-File"
 
 # iperf3サーバーのIPアドレス (別ホスト/別VM/別コンテナで `iperf3 -s` を起動しておく)
 IPERF_SERVER_IP="192.168.1.100"
