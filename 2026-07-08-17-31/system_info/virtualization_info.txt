@@ -1,0 +1,16 @@
+===== systemd-detect-virt =====
+none
+
+===== /proc/cpuinfo 中の hypervisor flag =====
+検出されず
+
+===== docker ps -a (存在する場合) =====
+CONTAINER ID   IMAGE         COMMAND    CREATED       STATUS                   PORTS     NAMES
+b23d4390d32b   hello-world   "/hello"   4 hours ago   Exited (0) 4 hours ago             vigorous_haslett
+69e8684dddf6   hello-world   "/hello"   4 hours ago   Exited (0) 4 hours ago             busy_mendel
+386935f12166   hello-world   "/hello"   4 hours ago   Exited (0) 4 hours ago             affectionate_sanderson
+
+===== virsh list --all (存在する場合) =====
+ Id   Name   State
+--------------------
+
