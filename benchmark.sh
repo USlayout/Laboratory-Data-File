@@ -35,7 +35,7 @@ set -euo pipefail
 BASE_DIR="${HOME}/benchmark"
 
 # GitHubリポジトリのローカルパス (事前に git clone 済みであること)
-GITHUB_REPO_DIR="${HOME}/Laboratory-Data-File"
+GITHUB_REPO_DIR="${HOME}/Laboratory-Data-file"
 
 # iperf3サーバーのIPアドレス (別ホスト/別VM/別コンテナで `iperf3 -s` を起動しておく)
 IPERF_SERVER_IP="192.168.1.100"
