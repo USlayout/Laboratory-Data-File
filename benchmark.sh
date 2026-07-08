@@ -35,7 +35,7 @@ set -euo pipefail
 BASE_DIR="${HOME}/benchmark"
 
 # GitHubリポジトリのローカルパス (事前に git clone 済みであること)
-GITHUB_REPO_DIR="${HOME}/Laboratory-Data-file"
+GITHUB_REPO_DIR="${HOME}/Laboratory-Data-File"
 
 # iperf3サーバーのIPアドレス (別ホスト/別VM/別コンテナで `iperf3 -s` を起動しておく)
 IPERF_SERVER_IP="192.168.1.100"
@@ -325,8 +325,17 @@ upload_to_github() {
     log "git fetch を実行しています..."
     git fetch "${GIT_REMOTE}"
 
+    # 追跡対象ファイル(benchmark.sh 等)にローカル未コミットの変更が残っていると
+    # pull が "would be overwritten by merge" で失敗するため、
+    # 今回コピーしたデータ以外に汚れがある場合は自動で退避してから pull する。
     log "git pull を実行しています..."
-    git pull "${GIT_REMOTE}" "${GIT_BRANCH}"
+    if ! git pull "${GIT_REMOTE}" "${GIT_BRANCH}"; then
+        log "警告: pullに失敗しました。ローカルの未コミット変更を一時退避(stash)して再試行します。"
+        git stash push --include-untracked -m "auto-stash before pull ${RUN_NAME}"
+        git pull "${GIT_REMOTE}" "${GIT_BRANCH}"
+        log "退避した変更を復元します (今回のベンチマークデータを含む)..."
+        git stash pop
+    fi
 
     log "git add / commit を実行しています..."
     git add "${RUN_NAME}"
