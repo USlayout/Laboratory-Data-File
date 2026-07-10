@@ -80,24 +80,24 @@ log() {
 }
 
 check_dependencies() {
-    log "依存ツールを確認しています..."
+    log "Checking required dependencies..."
     local missing=0
     for cmd in sysbench fio iperf3 git nc; do
         if ! command -v "$cmd" &> /dev/null; then
-            log "エラー: '${cmd}' がインストールされていません。"
+            log "Error: '${cmd}' is not installed."
             missing=1
         fi
     done
     if [ "${missing}" -eq 1 ]; then
-        log "以下でまとめてインストールできます:"
+        log "You can install them together with:"
         log "  sudo apt update && sudo apt install -y sysbench fio iperf3 git netcat-openbsd"
         exit 1
     fi
-    log "依存ツールの確認完了"
+    log "Dependency check complete"
 }
 
 setup_directories() {
-    log "保存先ディレクトリを作成しています: ${RUN_DIR}"
+    log "Creating output directory: ${RUN_DIR}"
     mkdir -p "${RUN_DIR}"
 }
 
@@ -106,7 +106,7 @@ setup_directories() {
 ###############################################################################
 
 collect_system_info() {
-    log "システム情報を収集しています..."
+    log "Collecting system information..."
     local info_dir="${RUN_DIR}/system_info"
     mkdir -p "${info_dir}"
 
@@ -115,7 +115,7 @@ collect_system_info() {
         hostname
         uname -a
         echo
-        echo "===== OS情報 ====="
+        echo "===== OS information ====="
         cat /etc/os-release
     } > "${info_dir}/os_info.txt" 2>&1
 
@@ -155,21 +155,21 @@ collect_system_info() {
         echo "===== systemd-detect-virt ====="
         systemd-detect-virt 2>&1 || true
         echo
-        echo "===== /proc/cpuinfo 中の hypervisor flag ====="
-        grep -o 'hypervisor' /proc/cpuinfo | head -1 || echo "検出されず"
+        echo "===== hypervisor flag in /proc/cpuinfo ====="
+        grep -o 'hypervisor' /proc/cpuinfo | head -1 || echo "Not detected"
         echo
-        echo "===== docker ps -a (存在する場合) ====="
+        echo "===== docker ps -a (if available) ====="
         if command -v docker &> /dev/null; then
             docker ps -a 2>&1 || true
         else
-            echo "dockerは未インストール"
+            echo "docker is not installed"
         fi
         echo
-        echo "===== virsh list --all (存在する場合) ====="
+        echo "===== virsh list --all (if available) ====="
         if command -v virsh &> /dev/null; then
             virsh list --all 2>&1 || true
         else
-            echo "virshは未インストール"
+            echo "virsh is not installed"
         fi
     } > "${info_dir}/virtualization_info.txt"
 
@@ -181,7 +181,7 @@ collect_system_info() {
         find /sys/fs/cgroup -maxdepth 1 > "${info_dir}/cgroup_list.txt" 2>&1 || true
     fi
 
-    log "システム情報収集完了: ${info_dir}"
+    log "System information collection complete: ${info_dir}"
 }
 
 write_metadata() {
@@ -199,7 +199,7 @@ EOF
 ###############################################################################
 
 run_cpu_benchmark() {
-    log "CPUベンチマークを実行しています (sysbench cpu)..."
+    log "Running CPU benchmark (sysbench cpu)..."
     local out_dir="${RUN_DIR}/cpu"
     mkdir -p "${out_dir}"
 
@@ -209,7 +209,7 @@ run_cpu_benchmark() {
         --time="${SYSBENCH_CPU_TIME}" \
         run > "${out_dir}/sysbench_cpu_result.txt" 2>&1
 
-    log "CPUベンチマーク完了"
+    log "CPU benchmark complete"
 }
 
 ###############################################################################
@@ -217,7 +217,7 @@ run_cpu_benchmark() {
 ###############################################################################
 
 run_memory_benchmark() {
-    log "メモリベンチマークを実行しています (sysbench memory)..."
+    log "Running memory benchmark (sysbench memory)..."
     local out_dir="${RUN_DIR}/memory"
     mkdir -p "${out_dir}"
 
@@ -235,7 +235,7 @@ run_memory_benchmark() {
         --threads="${SYSBENCH_THREADS}" \
         run > "${out_dir}/sysbench_memory_read.txt" 2>&1
 
-    log "メモリベンチマーク完了"
+    log "Memory benchmark complete"
 }
 
 ###############################################################################
@@ -243,7 +243,7 @@ run_memory_benchmark() {
 ###############################################################################
 
 run_storage_benchmark() {
-    log "ストレージI/Oベンチマークを実行しています (fio)..."
+    log "Running storage I/O benchmark (fio)..."
     local out_dir="${RUN_DIR}/storage"
     mkdir -p "${out_dir}"
 
@@ -274,7 +274,7 @@ run_storage_benchmark() {
         \( -name "seq_write.*" -o -name "seq_read.*" -o -name "rand_write.*" -o -name "rand_read.*" \) \
         ! -name "*.json" -delete 2>/dev/null || true
 
-    log "ストレージI/Oベンチマーク完了"
+    log "Storage I/O benchmark complete"
 }
 
 ###############################################################################
@@ -282,13 +282,13 @@ run_storage_benchmark() {
 ###############################################################################
 
 run_network_benchmark() {
-    log "ネットワークベンチマークを実行しています (iperf3)..."
+    log "Running network benchmark (iperf3)..."
     local out_dir="${RUN_DIR}/network"
     mkdir -p "${out_dir}"
 
     if ! nc -z -w 3 "${IPERF_SERVER_IP}" 5201 2>/dev/null; then
-        log "警告: iperf3サーバー(${IPERF_SERVER_IP}:5201)に接続できません。ネットワークベンチマークをスキップします。"
-        echo "iperf3サーバー(${IPERF_SERVER_IP}:5201)に接続できなかったためスキップしました。" \
+        log "Warning: cannot connect to the iperf3 server (${IPERF_SERVER_IP}:5201). Skipping network benchmark."
+        echo "Skipped because the iperf3 server (${IPERF_SERVER_IP}:5201) could not be reached." \
             > "${out_dir}/SKIPPED.txt"
         return 0
     fi
@@ -301,7 +301,7 @@ run_network_benchmark() {
     iperf3 -c "${IPERF_SERVER_IP}" -u -b 1G -t "${IPERF_DURATION}" -J \
         > "${out_dir}/iperf3_udp.json"
 
-    log "ネットワークベンチマーク完了"
+    log "Network benchmark complete"
 }
 
 ###############################################################################
@@ -309,11 +309,11 @@ run_network_benchmark() {
 ###############################################################################
 
 upload_to_github() {
-    log "GitHubリポジトリへのアップロードを開始します..."
+    log "Starting upload to the GitHub repository..."
 
     if [ ! -d "${GITHUB_REPO_DIR}/.git" ]; then
-        log "エラー: ${GITHUB_REPO_DIR} はgitリポジトリではありません。"
-        log "事前に 'git clone <repo-url> ${GITHUB_REPO_DIR}' を実行してください。"
+        log "Error: ${GITHUB_REPO_DIR} is not a git repository."
+        log "Run 'git clone <repo-url> ${GITHUB_REPO_DIR}' first."
         exit 1
     fi
 
@@ -322,34 +322,34 @@ upload_to_github() {
 
     pushd "${GITHUB_REPO_DIR}" > /dev/null
 
-    log "git fetch を実行しています..."
+    log "Running git fetch..."
     git fetch "${GIT_REMOTE}"
 
     # 追跡対象ファイル(benchmark.sh 等)にローカル未コミットの変更が残っていると
     # pull が "would be overwritten by merge" で失敗するため、
     # 今回コピーしたデータ以外に汚れがある場合は自動で退避してから pull する。
-    log "git pull を実行しています..."
+    log "Running git pull..."
     if ! git pull "${GIT_REMOTE}" "${GIT_BRANCH}"; then
-        log "警告: pullに失敗しました。ローカルの未コミット変更を一時退避(stash)して再試行します。"
+        log "Warning: pull failed. Temporarily stashing local uncommitted changes and retrying."
         git stash push --include-untracked -m "auto-stash before pull ${RUN_NAME}"
         git pull "${GIT_REMOTE}" "${GIT_BRANCH}"
-        log "退避した変更を復元します (今回のベンチマークデータを含む)..."
+        log "Restoring stashed changes, including this benchmark data..."
         git stash pop
     fi
 
-    log "git add / commit を実行しています..."
+    log "Running git add / commit..."
     git add "${RUN_NAME}"
     if git diff --cached --quiet; then
-        log "コミットする変更がありません"
+        log "No changes to commit"
     else
         git commit -m "${GIT_COMMIT_MESSAGE}"
-        log "git push を実行しています..."
+        log "Running git push..."
         git push "${GIT_REMOTE}" "${GIT_BRANCH}"
     fi
 
     popd > /dev/null
 
-    log "GitHubへのアップロード完了: ${GITHUB_RUN_DIR}"
+    log "Upload to GitHub complete: ${GITHUB_RUN_DIR}"
 }
 
 ###############################################################################
@@ -357,7 +357,7 @@ upload_to_github() {
 ###############################################################################
 
 main() {
-    log "===== ベンチマーク自動化スクリプト開始 (${RUN_NAME}) ====="
+    log "===== Benchmark automation started (${RUN_NAME}) ====="
 
     check_dependencies
     setup_directories
@@ -371,9 +371,9 @@ main() {
 
     upload_to_github
 
-    log "===== ベンチマーク自動化スクリプト完了 ====="
-    log "ローカル保存先 : ${RUN_DIR}"
-    log "GitHub保存先   : ${GITHUB_RUN_DIR}"
+    log "===== Benchmark automation complete ====="
+    log "Local output directory : ${RUN_DIR}"
+    log "GitHub output directory: ${GITHUB_RUN_DIR}"
 }
 
 main "$@"
