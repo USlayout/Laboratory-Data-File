@@ -27,33 +27,25 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="${SCRIPT_DIR}/benchmark.conf"
+
 ###############################################################################
 # 設定 (環境に合わせて書き換えてください)
 ###############################################################################
 
-# ローカルの生データ保存先ルート
-BASE_DIR="${HOME}/benchmark"
+if [ ! -f "${CONFIG_FILE}" ]; then
+    echo "Configuration file not found: ${CONFIG_FILE}"
+    echo "Create it from the checked-in benchmark.conf template or restore it from version control."
+    exit 1
+fi
 
-# GitHubリポジトリのローカルパス (事前に git clone 済みであること)
-GITHUB_REPO_DIR="${HOME}/Laboratory-Data-File"
+# shellcheck source=/dev/null
+source "${CONFIG_FILE}"
 
-# iperf3サーバーのIPアドレス (別ホスト/別VM/別コンテナで `iperf3 -s` を起動しておく)
-IPERF_SERVER_IP="192.168.1.100"
-IPERF_DURATION=30            # 秒
-
-# sysbench 設定
-SYSBENCH_THREADS=$(nproc)
-SYSBENCH_CPU_MAX_PRIME=20000
-SYSBENCH_CPU_TIME=60         # 秒
-SYSBENCH_MEMORY_TOTAL_SIZE="10G"
-
-# fio 設定
-FIO_SIZE="1G"
-FIO_RUNTIME=30                # 秒
-
-# git 設定
-GIT_REMOTE="origin"
-GIT_BRANCH="main"
+if [ -z "${SYSBENCH_THREADS:-}" ]; then
+    SYSBENCH_THREADS=$(nproc)
+fi
 
 ###############################################################################
 # タイムスタンプ・パス生成
