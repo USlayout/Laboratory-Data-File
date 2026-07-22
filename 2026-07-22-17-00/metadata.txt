@@ -1,0 +1,8 @@
+Run name        : 2026-07-22-17-00
+Hostname        : kitalab
+User            : kitalab
+Label           : none
+CPU threads     : 20
+iperf3 targets  :
+  - host:192.168.50.65
+  - external:192.168.1.100
