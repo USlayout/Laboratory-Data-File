@@ -311,16 +311,28 @@ run_network_benchmark() {
         fi
 
         # TCP throughput (forward direction: this host -> ${label})
-        iperf3 -c "${ip}" -t "${IPERF_DURATION}" -J \
-            > "${out_dir}/iperf3_tcp.json"
+        if ! iperf3 -c "${ip}" -t "${IPERF_DURATION}" -J \
+            > "${out_dir}/iperf3_tcp.json" 2> "${out_dir}/iperf3_tcp.stderr"; then
+            log "  WARNING: iperf3 TCP forward test failed for '${label}'."
+            echo "iperf3 TCP forward test failed for ${ip}:5201." \
+                > "${out_dir}/ERROR.txt"
+        fi
 
         # TCP throughput (reverse direction: ${label} -> this host)
-        iperf3 -c "${ip}" -R -t "${IPERF_DURATION}" -J \
-            > "${out_dir}/iperf3_tcp_reverse.json"
+        if ! iperf3 -c "${ip}" -R -t "${IPERF_DURATION}" -J \
+            > "${out_dir}/iperf3_tcp_reverse.json" 2>> "${out_dir}/iperf3_tcp.stderr"; then
+            log "  WARNING: iperf3 TCP reverse test failed for '${label}'."
+            echo "iperf3 TCP reverse test failed for ${ip}:5201." \
+                > "${out_dir}/ERROR.txt"
+        fi
 
         # UDP throughput, jitter, packet loss (capped at 1Gbps)
-        iperf3 -c "${ip}" -u -b 1G -t "${IPERF_DURATION}" -J \
-            > "${out_dir}/iperf3_udp.json"
+        if ! iperf3 -c "${ip}" -u -b 1G -t "${IPERF_DURATION}" -J \
+            > "${out_dir}/iperf3_udp.json" 2>> "${out_dir}/iperf3_tcp.stderr"; then
+            log "  WARNING: iperf3 UDP test failed for '${label}'."
+            echo "iperf3 UDP test failed for ${ip}:5201." \
+                > "${out_dir}/ERROR.txt"
+        fi
 
         log "  -> '${label}' complete"
     done
