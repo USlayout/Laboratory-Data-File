@@ -10,8 +10,7 @@ CONFIG_FILE="${SCRIPT_DIR}/benchmark.conf"
 # =============================================================================
 
 if [ ! -f "${CONFIG_FILE}" ]; then
-    echo "ERROR: Configuration file not found:"
-    echo "${CONFIG_FILE}"
+    echo "Configuration file not found: ${CONFIG_FILE}"
     exit 1
 fi
 
@@ -33,10 +32,43 @@ log() {
 
 
 # =============================================================================
-# 必要コマンド確認
+# 実行ディレクトリ作成
+#
+# init_run "sysbench" "kvm"
+# =============================================================================
+
+init_run() {
+
+    BENCHMARK_TYPE="$1"
+    LABEL="${2:-}"
+
+    TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
+
+    if [ -n "${LABEL}" ]; then
+        RUN_NAME="${TIMESTAMP}-${LABEL}"
+    else
+        RUN_NAME="${TIMESTAMP}"
+    fi
+
+    RUN_DIR="${BASE_DIR}/${BENCHMARK_TYPE}/${RUN_NAME}"
+
+    # GitHub側も種類ごとに分離
+    GITHUB_RUN_DIR="${GITHUB_REPO_DIR}/${BENCHMARK_TYPE}/${RUN_NAME}"
+
+    GIT_COMMIT_MESSAGE="${BENCHMARK_TYPE} benchmark data ${RUN_NAME}"
+
+    mkdir -p "${RUN_DIR}"
+
+    log "Output directory: ${RUN_DIR}"
+}
+
+
+# =============================================================================
+# コマンド存在確認
 # =============================================================================
 
 require_command() {
+
     local cmd="$1"
 
     if ! command -v "${cmd}" &> /dev/null; then
@@ -47,40 +79,11 @@ require_command() {
 
 
 # =============================================================================
-# 実験ディレクトリ作成
-# =============================================================================
-
-init_experiment() {
-    LABEL="${1:-}"
-
-    TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
-
-    if [ -n "${LABEL}" ]; then
-        RUN_NAME="${TIMESTAMP}-${LABEL}"
-    else
-        RUN_NAME="${TIMESTAMP}"
-    fi
-
-    RUN_DIR="${BASE_DIR}/${RUN_NAME}"
-    GITHUB_RUN_DIR="${GITHUB_REPO_DIR}/${RUN_NAME}"
-
-    export LABEL
-    export TIMESTAMP
-    export RUN_NAME
-    export RUN_DIR
-    export GITHUB_RUN_DIR
-
-    mkdir -p "${RUN_DIR}"
-
-    log "Experiment directory: ${RUN_DIR}"
-}
-
-
-# =============================================================================
-# システム情報収集
+# システム情報
 # =============================================================================
 
 collect_system_info() {
+
     log "Collecting system information..."
 
     local info_dir="${RUN_DIR}/system_info"
@@ -98,6 +101,7 @@ collect_system_info() {
         echo
         echo "===== OS ====="
         cat /etc/os-release
+
     } > "${info_dir}/os_info.txt" 2>&1
 
 
@@ -111,6 +115,7 @@ collect_system_info() {
         echo
         echo "===== /proc/meminfo ====="
         cat /proc/meminfo
+
     } > "${info_dir}/memory_info.txt" 2>&1
 
 
@@ -121,19 +126,23 @@ collect_system_info() {
         echo
         echo "===== lsblk ====="
         lsblk
+
     } > "${info_dir}/disk_info.txt" 2>&1
 
 
     ip a > "${info_dir}/network_info.txt" 2>&1 || true
 
+
     top -b -n 1 \
-        > "${info_dir}/top_snapshot.txt" 2>&1 || true
+        > "${info_dir}/top_snapshot.txt" 2>&1
+
 
     ps aux --sort=-%cpu \
-        > "${info_dir}/process_list_by_cpu.txt" 2>&1 || true
+        > "${info_dir}/process_list_by_cpu.txt"
 
     ps aux --sort=-%mem \
-        > "${info_dir}/process_list_by_mem.txt" 2>&1 || true
+        > "${info_dir}/process_list_by_mem.txt"
+
 
     systemctl list-units \
         --type=service \
@@ -141,15 +150,23 @@ collect_system_info() {
         > "${info_dir}/running_services.txt" 2>&1 || true
 
 
+    # =========================================================================
+    # 仮想化 / コンテナ情報
+    # =========================================================================
+
     {
         echo "===== systemd-detect-virt ====="
+
         systemd-detect-virt 2>&1 || true
+
 
         echo
         echo "===== hypervisor flag ====="
+
         grep -o 'hypervisor' /proc/cpuinfo \
             | head -1 \
             || echo "Not detected"
+
 
         echo
         echo "===== docker ps -a ====="
@@ -159,6 +176,7 @@ collect_system_info() {
         else
             echo "docker is not installed"
         fi
+
 
         echo
         echo "===== virsh list --all ====="
@@ -172,14 +190,17 @@ collect_system_info() {
     } > "${info_dir}/virtualization_info.txt"
 
 
-    uptime > "${info_dir}/uptime.txt" 2>&1 || true
+    uptime > "${info_dir}/uptime.txt"
 
 
     if [ -d /sys/fs/cgroup ]; then
+
         find /sys/fs/cgroup \
             -maxdepth 1 \
             > "${info_dir}/cgroup_list.txt" 2>&1 || true
+
     fi
+
 
     log "System information collection complete"
 }
@@ -190,27 +211,16 @@ collect_system_info() {
 # =============================================================================
 
 write_metadata() {
+
     cat > "${RUN_DIR}/metadata.txt" <<EOF
+ベンチマーク   : ${BENCHMARK_TYPE}
 実行日時       : ${TIMESTAMP}
 ホスト名       : $(hostname)
 実行ユーザー   : $(whoami)
 ラベル         : ${LABEL:-なし}
-CPUスレッド数  : ${SYSBENCH_THREADS}
-実行回数       : ${BENCHMARK_RUNS}
-
-[sysbench]
-CPU max prime  : ${SYSBENCH_CPU_MAX_PRIME}
-CPU time       : ${SYSBENCH_CPU_TIME}
-Memory size    : ${SYSBENCH_MEMORY_TOTAL_SIZE}
-
-[fio]
-Size           : ${FIO_SIZE}
-Runtime        : ${FIO_RUNTIME}
-
-[iperf3]
-Server         : ${IPERF_SERVER_IP}
-Duration       : ${IPERF_DURATION}
+CPUコア数      : ${SYSBENCH_THREADS}
 EOF
+
 }
 
 
@@ -219,50 +229,80 @@ EOF
 # =============================================================================
 
 upload_to_github() {
-    log "Uploading experiment to GitHub..."
+
+    log "Starting GitHub upload..."
 
     require_command git
 
+
     if [ ! -d "${GITHUB_REPO_DIR}/.git" ]; then
+
         log "ERROR: ${GITHUB_REPO_DIR} is not a Git repository."
+        log "Run git clone first."
+
         exit 1
     fi
 
+
+    mkdir -p "${GITHUB_RUN_DIR}"
+
+    cp -r \
+        "${RUN_DIR}/." \
+        "${GITHUB_RUN_DIR}/"
+
+
     pushd "${GITHUB_REPO_DIR}" > /dev/null
 
-    log "git fetch..."
+
+    log "git fetch"
+
     git fetch "${GIT_REMOTE}"
 
-    log "git pull..."
+
+    log "git pull"
 
     if ! git pull "${GIT_REMOTE}" "${GIT_BRANCH}"; then
-        log "Pull failed. Stashing local changes..."
+
+        log "Pull failed. Stashing local changes."
 
         git stash push \
             --include-untracked \
-            -m "auto-stash before benchmark upload ${RUN_NAME}"
+            -m "auto-stash before pull ${RUN_NAME}"
 
         git pull "${GIT_REMOTE}" "${GIT_BRANCH}"
 
-        git stash pop || true
+        log "Restoring stash"
+
+        git stash pop
+
     fi
 
-    # pull後に結果をコピーすることで、結果データがstashに巻き込まれない
-    mkdir -p "${GITHUB_RUN_DIR}"
-    cp -a "${RUN_DIR}/." "${GITHUB_RUN_DIR}/"
 
-    git add "${RUN_NAME}"
+    log "git add"
+
+    git add "${BENCHMARK_TYPE}/${RUN_NAME}"
+
 
     if git diff --cached --quiet; then
-        log "No changes to commit"
-    else
-        git commit -m "Benchmark data ${RUN_NAME}"
 
-        log "git push..."
-        git push "${GIT_REMOTE}" "${GIT_BRANCH}"
+        log "No changes to commit"
+
+    else
+
+        git commit \
+            -m "${GIT_COMMIT_MESSAGE}"
+
+        log "git push"
+
+        git push \
+            "${GIT_REMOTE}" \
+            "${GIT_BRANCH}"
+
     fi
 
+
     popd > /dev/null
+
 
     log "GitHub upload complete"
 }
