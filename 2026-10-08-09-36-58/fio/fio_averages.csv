@@ -1,0 +1,5 @@
+﻿file,count,iops_avg,throughput_mib_s_avg,latency_us_avg
+fio_rand_read.json,10,66819.77,261.01,59.41
+fio_rand_write.json,10,923656.37,3608.03,1.31
+fio_seq_read.json,10,3095.24,3095.24,320.33
+fio_seq_write.json,10,2482.64,2482.64,113.69
