@@ -1,0 +1,16 @@
+===== systemd-detect-virt =====
+none
+
+===== hypervisor flag =====
+Not detected
+
+===== docker ps -a =====
+CONTAINER ID   IMAGE         COMMAND    CREATED        STATUS                    PORTS     NAMES
+b23d4390d32b   hello-world   "/hello"   3 months ago   Exited (0) 3 months ago             vigorous_haslett
+69e8684dddf6   hello-world   "/hello"   3 months ago   Exited (0) 3 months ago             busy_mendel
+386935f12166   hello-world   "/hello"   3 months ago   Exited (0) 3 months ago             affectionate_sanderson
+
+===== virsh list --all =====
+ Id   Name   State
+--------------------
+

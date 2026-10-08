@@ -1,0 +1,19 @@
+実行日時       : 2026-10-08-10-16-09
+ホスト名       : kitalab
+実行ユーザー   : kitalab
+ラベル         : iperf3
+CPUスレッド数  : 20
+実行回数       : 10
+
+[sysbench]
+CPU max prime  : 20000
+CPU time       : 60
+Memory size    : 10G
+
+[fio]
+Size           : 1G
+Runtime        : 30
+
+[iperf3]
+Server         : 192.168.50.65
+Duration       : 30

@@ -1,0 +1,36 @@
+  UNIT                         LOAD   ACTIVE SUB     DESCRIPTION
+  containerd.service           loaded active running containerd container runtime
+  cron.service                 loaded active running Regular background program processing daemon
+  dbus.service                 loaded active running D-Bus System Message Bus
+  docker.service               loaded active running Docker Application Container Engine
+  fwupd.service                loaded active running Firmware update daemon
+  getty@tty1.service           loaded active running Getty on tty1
+  iperf3.service               loaded active running iperf3 server
+  libvirtd.service             loaded active running libvirt legacy monolithic daemon
+  ModemManager.service         loaded active running Modem Manager
+  multipathd.service           loaded active running Device-Mapper Multipath Device Controller
+  netplan-wpa-wlp131s0.service loaded active running WPA supplicant for netplan wlp131s0
+  polkit.service               loaded active running Authorization Manager
+  rsyslog.service              loaded active running System Logging Service
+  ssh.service                  loaded active running OpenBSD Secure Shell server
+  systemd-journald.service     loaded active running Journal Service
+  systemd-logind.service       loaded active running User Login Management
+  systemd-machined.service     loaded active running Virtual Machine and Container Registration Service
+  systemd-networkd.service     loaded active running Network Management
+  systemd-resolved.service     loaded active running Network Name Resolution
+  systemd-timesyncd.service    loaded active running Network Time Synchronization
+  systemd-udevd.service        loaded active running Rule-based Manager for Device Events and Files
+  thermald.service             loaded active running Thermal Daemon Service
+  udisks2.service              loaded active running Disk Manager
+  unattended-upgrades.service  loaded active running Unattended Upgrades Shutdown
+  upower.service               loaded active running Daemon for power management
+  user@1000.service            loaded active running User Manager for UID 1000
+  virtlockd.service            loaded active running libvirt locking daemon
+  virtlogd.service             loaded active running libvirt logging daemon
+  wpa_supplicant.service       loaded active running WPA supplicant
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+29 loaded units listed.
