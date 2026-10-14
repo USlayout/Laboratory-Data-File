@@ -7,45 +7,37 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/common.sh"
 
-
 LABEL="${1:-}"
-
-init_run "iperf3" "${LABEL}"
 
 require_command iperf3
 require_command nc
+require_command git
 
+# iperf3専用の実験ディレクトリを作成
+init_experiment "iperf3${LABEL:+-${LABEL}}"
 
-log "===== iperf3 benchmark started ====="
-
+OUT_DIR="${RUN_DIR}/iperf3"
+mkdir -p "${OUT_DIR}"
 
 collect_system_info
 write_metadata
 
 
-OUT_DIR="${RUN_DIR}/network"
-
-mkdir -p "${OUT_DIR}"
-
-
 # =============================================================================
-# 接続確認
+# サーバー接続確認
 # =============================================================================
 
-log "Checking iperf3 server..."
+log "Checking iperf3 server ${IPERF_SERVER_IP}:5201..."
 
 if ! nc -z -w 3 "${IPERF_SERVER_IP}" 5201 2>/dev/null; then
 
-    log "WARNING:"
-    log "Cannot connect to ${IPERF_SERVER_IP}:5201"
+    log "ERROR: Cannot connect to iperf3 server."
+    log "${IPERF_SERVER_IP}:5201"
 
-    echo \
-        "Skipped because iperf3 server ${IPERF_SERVER_IP}:5201 could not be reached." \
-        > "${OUT_DIR}/SKIPPED.txt"
+    echo "iperf3 server unreachable: ${IPERF_SERVER_IP}:5201" \
+        > "${OUT_DIR}/FAILED.txt"
 
-    upload_to_github
-
-    exit 0
+    exit 1
 fi
 
 
@@ -53,8 +45,7 @@ fi
 # TCP
 # =============================================================================
 
-log "Running TCP benchmark..."
-
+log "Running iperf3 TCP..."
 
 iperf3 \
     -c "${IPERF_SERVER_IP}" \
@@ -62,13 +53,14 @@ iperf3 \
     -J \
     > "${OUT_DIR}/iperf3_tcp.json"
 
+log "TCP complete"
+
 
 # =============================================================================
 # UDP
 # =============================================================================
 
-log "Running UDP benchmark..."
-
+log "Running iperf3 UDP..."
 
 iperf3 \
     -c "${IPERF_SERVER_IP}" \
@@ -78,12 +70,19 @@ iperf3 \
     -J \
     > "${OUT_DIR}/iperf3_udp.json"
 
+log "UDP complete"
 
-log "iperf3 benchmark complete"
 
+# =============================================================================
+# GitHub
+# =============================================================================
 
 upload_to_github
 
 
-log "===== iperf3 benchmark complete ====="
-log "Result: ${RUN_DIR}"
+log "=================================================="
+log " iperf3 benchmark complete"
+log "=================================================="
+
+log "Result:"
+log "  ${RUN_DIR}"

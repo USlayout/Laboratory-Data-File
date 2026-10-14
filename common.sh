@@ -22,6 +22,15 @@ if [ -z "${SYSBENCH_THREADS:-}" ]; then
     SYSBENCH_THREADS=$(nproc)
 fi
 
+# CPU affinity: use guest-visible CPU IDs inside VMs/containers
+CPU_PREFIX=()
+if [ -n "${BENCHMARK_CPU_CORES:-}" ]; then
+    command -v taskset >/dev/null || { echo "ERROR: taskset missing" >&2; exit 1; }
+    taskset -c "${BENCHMARK_CPU_CORES}" true || { echo "ERROR: invalid CPU affinity" >&2; exit 1; }
+    CPU_PREFIX=(taskset -c "${BENCHMARK_CPU_CORES}")
+fi
+
+
 
 # =============================================================================
 # ログ
@@ -196,6 +205,7 @@ write_metadata() {
 実行ユーザー   : $(whoami)
 ラベル         : ${LABEL:-なし}
 CPUスレッド数  : ${SYSBENCH_THREADS}
+CPU affinity   : ${BENCHMARK_CPU_CORES:-none}
 実行回数       : ${BENCHMARK_RUNS}
 
 [sysbench]

@@ -47,7 +47,7 @@ fi
 
 log "Running iperf3 TCP..."
 
-iperf3 \
+"${CPU_PREFIX[@]}" iperf3 \
     -c "${IPERF_SERVER_IP}" \
     -t "${IPERF_DURATION}" \
     -J \
@@ -62,7 +62,7 @@ log "TCP complete"
 
 log "Running iperf3 UDP..."
 
-iperf3 \
+"${CPU_PREFIX[@]}" iperf3 \
     -c "${IPERF_SERVER_IP}" \
     -u \
     -b 1G \

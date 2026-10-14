@@ -13,7 +13,7 @@ RUN_NUMBER="$2"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=/dev/null
-source "${SCRIPT_DIR}/benchmark.conf"
+source "${SCRIPT_DIR}/common.sh"
 
 OUT_DIR="${RUN_DIR}/fio/run$(printf '%02d' "${RUN_NUMBER}")"
 
@@ -22,9 +22,11 @@ mkdir -p "${OUT_DIR}"
 
 echo "Sequential WRITE..."
 
-fio \
+"${CPU_PREFIX[@]}" fio \
     --name=seq_write \
     --directory="${OUT_DIR}" \
+    --direct=1 \
+    --ioengine=libaio \
     --rw=write \
     --bs=1M \
     --size="${FIO_SIZE}" \
@@ -38,9 +40,11 @@ fio \
 
 echo "Sequential READ..."
 
-fio \
+"${CPU_PREFIX[@]}" fio \
     --name=seq_read \
     --directory="${OUT_DIR}" \
+    --direct=1 \
+    --ioengine=libaio \
     --rw=read \
     --bs=1M \
     --size="${FIO_SIZE}" \
@@ -54,9 +58,11 @@ fio \
 
 echo "Random WRITE..."
 
-fio \
+"${CPU_PREFIX[@]}" fio \
     --name=rand_write \
     --directory="${OUT_DIR}" \
+    --direct=1 \
+    --ioengine=libaio \
     --rw=randwrite \
     --bs=4k \
     --size="${FIO_SIZE}" \
@@ -71,9 +77,11 @@ fio \
 
 echo "Random READ..."
 
-fio \
+"${CPU_PREFIX[@]}" fio \
     --name=rand_read \
     --directory="${OUT_DIR}" \
+    --direct=1 \
+    --ioengine=libaio \
     --rw=randread \
     --bs=4k \
     --size="${FIO_SIZE}" \

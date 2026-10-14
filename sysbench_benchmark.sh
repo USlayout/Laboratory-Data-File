@@ -13,11 +13,9 @@ RUN_NUMBER="$2"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=/dev/null
-source "${SCRIPT_DIR}/benchmark.conf"
+source "${SCRIPT_DIR}/common.sh"
 
-if [ -z "${SYSBENCH_THREADS:-}" ]; then
-    SYSBENCH_THREADS=$(nproc)
-fi
+
 
 OUT_DIR="${RUN_DIR}/sysbench/run$(printf '%02d' "${RUN_NUMBER}")"
 
@@ -26,7 +24,7 @@ mkdir -p "${OUT_DIR}/memory"
 
 echo "Running sysbench CPU..."
 
-sysbench cpu \
+"${CPU_PREFIX[@]}" sysbench cpu \
     --cpu-max-prime="${SYSBENCH_CPU_MAX_PRIME}" \
     --threads="${SYSBENCH_THREADS}" \
     --time="${SYSBENCH_CPU_TIME}" \
@@ -36,7 +34,7 @@ sysbench cpu \
 
 echo "Running sysbench memory WRITE..."
 
-sysbench memory \
+"${CPU_PREFIX[@]}" sysbench memory \
     --memory-block-size=1K \
     --memory-total-size="${SYSBENCH_MEMORY_TOTAL_SIZE}" \
     --memory-oper=write \
@@ -47,7 +45,7 @@ sysbench memory \
 
 echo "Running sysbench memory READ..."
 
-sysbench memory \
+"${CPU_PREFIX[@]}" sysbench memory \
     --memory-block-size=1K \
     --memory-total-size="${SYSBENCH_MEMORY_TOTAL_SIZE}" \
     --memory-oper=read \

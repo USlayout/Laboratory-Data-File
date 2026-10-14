@@ -2,55 +2,39 @@
 
 set -euo pipefail
 
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 RUN_DIR RUN_NUMBER"
+    exit 1
+fi
+
+RUN_DIR="$1"
+RUN_NUMBER="$2"
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=/dev/null
-source "${SCRIPT_DIR}/common.sh"
+source "${SCRIPT_DIR}/benchmark.conf"
 
+if [ -z "${SYSBENCH_THREADS:-}" ]; then
+    SYSBENCH_THREADS=$(nproc)
+fi
 
-LABEL="${1:-}"
+OUT_DIR="${RUN_DIR}/sysbench/run$(printf '%02d' "${RUN_NUMBER}")"
 
-init_run "sysbench" "${LABEL}"
+mkdir -p "${OUT_DIR}/cpu"
+mkdir -p "${OUT_DIR}/memory"
 
-require_command sysbench
-
-
-log "===== sysbench benchmark started ====="
-
-
-collect_system_info
-write_metadata
-
-
-# =============================================================================
-# CPU
-# =============================================================================
-
-log "Running CPU benchmark..."
-
-mkdir -p "${RUN_DIR}/cpu"
-
+echo "Running sysbench CPU..."
 
 sysbench cpu \
     --cpu-max-prime="${SYSBENCH_CPU_MAX_PRIME}" \
     --threads="${SYSBENCH_THREADS}" \
     --time="${SYSBENCH_CPU_TIME}" \
     run \
-    > "${RUN_DIR}/cpu/sysbench_cpu_result.txt" 2>&1
+    > "${OUT_DIR}/cpu/sysbench_cpu_result.txt" 2>&1
 
 
-log "CPU benchmark complete"
-
-
-# =============================================================================
-# Memory WRITE
-# =============================================================================
-
-mkdir -p "${RUN_DIR}/memory"
-
-
-log "Running memory WRITE benchmark..."
-
+echo "Running sysbench memory WRITE..."
 
 sysbench memory \
     --memory-block-size=1K \
@@ -58,15 +42,10 @@ sysbench memory \
     --memory-oper=write \
     --threads="${SYSBENCH_THREADS}" \
     run \
-    > "${RUN_DIR}/memory/sysbench_memory_write.txt" 2>&1
+    > "${OUT_DIR}/memory/sysbench_memory_write.txt" 2>&1
 
 
-# =============================================================================
-# Memory READ
-# =============================================================================
-
-log "Running memory READ benchmark..."
-
+echo "Running sysbench memory READ..."
 
 sysbench memory \
     --memory-block-size=1K \
@@ -74,18 +53,6 @@ sysbench memory \
     --memory-oper=read \
     --threads="${SYSBENCH_THREADS}" \
     run \
-    > "${RUN_DIR}/memory/sysbench_memory_read.txt" 2>&1
+    > "${OUT_DIR}/memory/sysbench_memory_read.txt" 2>&1
 
-
-log "Memory benchmark complete"
-
-
-# =============================================================================
-# GitHub
-# =============================================================================
-
-upload_to_github
-
-
-log "===== sysbench benchmark complete ====="
-log "Result: ${RUN_DIR}"
+echo "sysbench run ${RUN_NUMBER} complete"
