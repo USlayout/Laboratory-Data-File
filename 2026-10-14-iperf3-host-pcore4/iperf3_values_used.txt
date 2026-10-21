@@ -1,0 +1,39 @@
+iperf3 host values used for summary calculation
+
+Each JSON file contributes one measurement for its protocol.
+
+Value source and conversion:
+- TCP throughput: end.sum_sent.bits_per_second / 1,000,000 -> throughput_mbps
+- UDP throughput: end.sum.bits_per_second / 1,000,000 -> throughput_mbps
+- TCP latency: end.streams[0].sender.mean_rtt / 1,000 -> latency_ms
+- UDP latency: end.sum.jitter_ms -> latency_ms (already milliseconds)
+
+The throughput_mbps and latency_ms columns are used for each protocol's:
+- average = sum of 10 measurements / 10
+- median = average of the 5th and 6th values after sorting
+- population standard deviation = sqrt(sum((value - average)^2) / 10)
+
+Extracted measurements: 20
+
+| run | protocol | throughput (Mbps) | latency metric | latency (ms) |
+|---|---|---:|---|---:|
+| 2026-10-14-14-11-35-iperf3-host-pcore4 | TCP | 930.972445 | mean_rtt | 2.833000 |
+| 2026-10-14-14-11-35-iperf3-host-pcore4 | UDP | 955.954181 | jitter_ms | 0.013574 |
+| 2026-10-14-14-12-47-iperf3-host-pcore4 | TCP | 936.572679 | mean_rtt | 2.929000 |
+| 2026-10-14-14-12-47-iperf3-host-pcore4 | UDP | 955.929277 | jitter_ms | 0.010352 |
+| 2026-10-14-14-15-21-iperf3-host-pcore4 | TCP | 934.973925 | mean_rtt | 2.462000 |
+| 2026-10-14-14-15-21-iperf3-host-pcore4 | UDP | 955.908794 | jitter_ms | 0.019574 |
+| 2026-10-14-14-16-32-iperf3-host-pcore4 | TCP | 876.174123 | mean_rtt | 2.513000 |
+| 2026-10-14-14-16-32-iperf3-host-pcore4 | UDP | 955.584159 | jitter_ms | 0.015203 |
+| 2026-10-14-14-17-43-iperf3-host-pcore4 | TCP | 940.179930 | mean_rtt | 3.367000 |
+| 2026-10-14-14-17-43-iperf3-host-pcore4 | UDP | 955.952063 | jitter_ms | 0.007557 |
+| 2026-10-14-14-18-52-iperf3-host-pcore4 | TCP | 937.128485 | mean_rtt | 2.932000 |
+| 2026-10-14-14-18-52-iperf3-host-pcore4 | UDP | 955.967264 | jitter_ms | 0.011439 |
+| 2026-10-14-14-24-12-iperf3-host-pcore4 | TCP | 901.482313 | mean_rtt | 1.867000 |
+| 2026-10-14-14-24-12-iperf3-host-pcore4 | UDP | 956.192371 | jitter_ms | 0.002106 |
+| 2026-10-14-14-25-23-iperf3-host-pcore4 | TCP | 939.362407 | mean_rtt | 2.476000 |
+| 2026-10-14-14-25-23-iperf3-host-pcore4 | UDP | 955.608378 | jitter_ms | 0.010422 |
+| 2026-10-14-14-26-39-iperf3-host-pcore4 | TCP | 939.358211 | mean_rtt | 2.248000 |
+| 2026-10-14-14-26-39-iperf3-host-pcore4 | UDP | 956.100953 | jitter_ms | 0.018158 |
+| 2026-10-14-14-39-12-iperf3-host-pcore4 | TCP | 941.287504 | mean_rtt | 2.692000 |
+| 2026-10-14-14-39-12-iperf3-host-pcore4 | UDP | 956.282678 | jitter_ms | 0.005640 |

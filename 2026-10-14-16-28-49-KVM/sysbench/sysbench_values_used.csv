@@ -1,0 +1,31 @@
+run,test,source_file,source_metric,value,unit
+run01,cpu,run01\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6041.54,events/sec
+run01,memory_read,run01\memory\sysbench_memory_read.txt,MiB transferred: read,32882.25,MiB/sec
+run01,memory_write,run01\memory\sysbench_memory_write.txt,MiB transferred: write,8437.32,MiB/sec
+run02,cpu,run02\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6038.94,events/sec
+run02,memory_read,run02\memory\sysbench_memory_read.txt,MiB transferred: read,32649.85,MiB/sec
+run02,memory_write,run02\memory\sysbench_memory_write.txt,MiB transferred: write,8287.06,MiB/sec
+run03,cpu,run03\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6041.76,events/sec
+run03,memory_read,run03\memory\sysbench_memory_read.txt,MiB transferred: read,32743.93,MiB/sec
+run03,memory_write,run03\memory\sysbench_memory_write.txt,MiB transferred: write,8493.61,MiB/sec
+run04,cpu,run04\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6039.99,events/sec
+run04,memory_read,run04\memory\sysbench_memory_read.txt,MiB transferred: read,32607.83,MiB/sec
+run04,memory_write,run04\memory\sysbench_memory_write.txt,MiB transferred: write,8557.14,MiB/sec
+run05,cpu,run05\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6042.04,events/sec
+run05,memory_read,run05\memory\sysbench_memory_read.txt,MiB transferred: read,32843.2,MiB/sec
+run05,memory_write,run05\memory\sysbench_memory_write.txt,MiB transferred: write,8410.63,MiB/sec
+run06,cpu,run06\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6043.07,events/sec
+run06,memory_read,run06\memory\sysbench_memory_read.txt,MiB transferred: read,32633.02,MiB/sec
+run06,memory_write,run06\memory\sysbench_memory_write.txt,MiB transferred: write,8481.29,MiB/sec
+run07,cpu,run07\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6042.54,events/sec
+run07,memory_read,run07\memory\sysbench_memory_read.txt,MiB transferred: read,32562.03,MiB/sec
+run07,memory_write,run07\memory\sysbench_memory_write.txt,MiB transferred: write,8417.53,MiB/sec
+run08,cpu,run08\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6040.36,events/sec
+run08,memory_read,run08\memory\sysbench_memory_read.txt,MiB transferred: read,32683.08,MiB/sec
+run08,memory_write,run08\memory\sysbench_memory_write.txt,MiB transferred: write,9115.47,MiB/sec
+run09,cpu,run09\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6039.02,events/sec
+run09,memory_read,run09\memory\sysbench_memory_read.txt,MiB transferred: read,32662.32,MiB/sec
+run09,memory_write,run09\memory\sysbench_memory_write.txt,MiB transferred: write,8809.13,MiB/sec
+run10,cpu,run10\cpu\sysbench_cpu_result.txt,CPU speed: events per second,6038.31,events/sec
+run10,memory_read,run10\memory\sysbench_memory_read.txt,MiB transferred: read,32490.95,MiB/sec
+run10,memory_write,run10\memory\sysbench_memory_write.txt,MiB transferred: write,8840.57,MiB/sec

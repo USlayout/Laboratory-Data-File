@@ -1,0 +1,41 @@
+iperf3 values used for summary calculation
+
+Each JSON file contributes one measurement for its protocol.
+
+Value source and calculation use:
+- TCP throughput: end.sum_sent.bits_per_second / 1,000,000 -> throughput_mbps
+- UDP throughput: end.sum.bits_per_second / 1,000,000 -> throughput_mbps
+- TCP latency: end.streams[0].sender.mean_rtt / 1,000 -> latency_ms
+- UDP latency: end.sum.jitter_ms -> latency_ms (already in milliseconds)
+
+For each protocol, the *_mbps and latency_ms columns are used to calculate:
+- average = sum of the 10 measurements / 10
+- median = middle value after sorting the 10 measurements
+- population standard deviation = sqrt(sum((value - average)^2) / 10)
+
+Extracted measurements: 20
+
+Raw and converted values:
+
+| run | protocol | throughput (Mbps) | latency metric | latency (ms) |
+|---|---|---:|---|---:|
+| 2026-10-21-14-11-58-iperf3-kvm | TCP | 939.367980 | mean_rtt | 4.459000 |
+| 2026-10-21-14-11-58-iperf3-kvm | UDP | 999.993617 | jitter_ms | 0.025747 |
+| 2026-10-21-14-13-35-iperf3-kvm | TCP | 904.390965 | mean_rtt | 1.911000 |
+| 2026-10-21-14-13-35-iperf3-kvm | UDP | 999.993756 | jitter_ms | 0.009742 |
+| 2026-10-21-14-14-45-iperf3-kvm | TCP | 938.361043 | mean_rtt | 3.452000 |
+| 2026-10-21-14-14-45-iperf3-kvm | UDP | 999.994559 | jitter_ms | 0.029033 |
+| 2026-10-21-14-15-55-iperf3-kvm | TCP | 937.513253 | mean_rtt | 4.614000 |
+| 2026-10-21-14-15-55-iperf3-kvm | UDP | 999.996041 | jitter_ms | 0.017823 |
+| 2026-10-21-14-17-07-iperf3-kvm | TCP | 940.555831 | mean_rtt | 7.271000 |
+| 2026-10-21-14-17-07-iperf3-kvm | UDP | 999.995039 | jitter_ms | 0.016448 |
+| 2026-10-21-14-18-16-iperf3-kvm | TCP | 940.212656 | mean_rtt | 4.278000 |
+| 2026-10-21-14-18-16-iperf3-kvm | UDP | 999.993761 | jitter_ms | 0.020926 |
+| 2026-10-21-14-23-36-iperf3-kvm | TCP | 932.316189 | mean_rtt | 2.197000 |
+| 2026-10-21-14-23-36-iperf3-kvm | UDP | 999.994861 | jitter_ms | 0.027270 |
+| 2026-10-21-14-25-29-iperf3-kvm | TCP | 939.729358 | mean_rtt | 3.000000 |
+| 2026-10-21-14-25-29-iperf3-kvm | UDP | 999.994819 | jitter_ms | 0.011660 |
+| 2026-10-21-14-26-58-iperf3-kvm | TCP | 919.316800 | mean_rtt | 2.882000 |
+| 2026-10-21-14-26-58-iperf3-kvm | UDP | 999.994667 | jitter_ms | 0.013920 |
+| 2026-10-21-14-29-11-iperf3-kvm | TCP | 937.633106 | mean_rtt | 3.893000 |
+| 2026-10-21-14-29-11-iperf3-kvm | UDP | 999.995025 | jitter_ms | 0.016205 |
