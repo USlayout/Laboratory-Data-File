@@ -1,0 +1,4 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.0   4776  4276 pts/0    Ss   15:49   0:00 /bin/bash
+root        1033  0.0  0.0   4644  3724 pts/0    S+   16:41   0:00 bash ./iperf3_benchmark.sh docker
+root        1055  0.0  0.0   6764  4148 pts/0    R+   16:41   0:00 ps aux --sort=-%cpu

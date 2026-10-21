@@ -1,0 +1,10 @@
+top - 16:33:49 up 14 days,  1:50,  0 users,  load average: 0.08, 1.05, 1.71
+Tasks:   3 total,   1 running,   2 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  14735.1 total,   5851.7 free,   3619.7 used,   5720.2 buff/cache     
+MiB Swap:   4096.0 total,   3866.1 free,    229.9 used.  11115.4 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+      1 root      20   0    4776   4276   3648 S   0.0   0.0   0:00.05 bash
+    757 root      20   0    4644   3756   3376 S   0.0   0.0   0:00.00 bash
+    778 root      20   0    7804   5328   3296 R   0.0   0.0   0:00.00 top

@@ -1,0 +1,20 @@
+実行日時       : 2026-10-21-16-43-56
+ホスト名       : 99ba92c336df
+実行ユーザー   : root
+ラベル         : iperf3-docker
+CPUスレッド数  : 4
+CPU affinity   : 0,2,4,6
+実行回数       : 10
+
+[sysbench]
+CPU max prime  : 20000
+CPU time       : 60
+Memory size    : 10G
+
+[fio]
+Size           : 1G
+Runtime        : 30
+
+[iperf3]
+Server         : 192.168.50.65
+Duration       : 30

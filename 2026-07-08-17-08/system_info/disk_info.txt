@@ -1,0 +1,22 @@
+===== df -h =====
+Filesystem                         Size  Used Avail Use% Mounted on
+tmpfs                              2.9G  2.2M  2.9G   1% /run
+/dev/mapper/ubuntu--vg-ubuntu--lv  936G  8.3G  889G   1% /
+tmpfs                              7.2G     0  7.2G   0% /dev/shm
+efivarfs                           192K  162K   26K  87% /sys/firmware/efi/efivars
+none                               1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+none                               1.0M     0  1.0M   0% /run/credentials/systemd-resolved.service
+tmpfs                              7.2G     0  7.2G   0% /tmp
+/dev/nvme0n1p2                     2.0G  184M  1.7G  11% /boot
+/dev/nvme0n1p1                     1.1G  6.4M  1.1G   1% /boot/efi
+none                               1.0M     0  1.0M   0% /run/credentials/systemd-networkd.service
+none                               1.0M     0  1.0M   0% /run/credentials/getty@tty1.service
+tmpfs                              1.5G  8.0K  1.5G   1% /run/user/1000
+
+===== lsblk =====
+NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+nvme0n1                   259:0    0 953.9G  0 disk 
+├─nvme0n1p1               259:1    0     1G  0 part /boot/efi
+├─nvme0n1p2               259:2    0     2G  0 part /boot
+└─nvme0n1p3               259:3    0 950.8G  0 part 
+  └─ubuntu--vg-ubuntu--lv 252:0    0 950.8G  0 lvm  /

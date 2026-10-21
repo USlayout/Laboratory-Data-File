@@ -1,0 +1,4 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.0   4776  4276 pts/0    Ss   15:49   0:00 /bin/bash
+root          48  0.0  0.0   6764  4168 pts/0    R+   15:58   0:00 ps aux --sort=-%mem
+root          21  0.0  0.0   4644  3820 pts/0    S+   15:58   0:00 bash ./run_all.sh
