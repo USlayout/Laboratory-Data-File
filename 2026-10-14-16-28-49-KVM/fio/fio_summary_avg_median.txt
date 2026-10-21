@@ -1,0 +1,8 @@
+fio summary (run01-run10)
+
+| file | count | iops_avg | iops_median | iops_stddev | throughput_mib_s_avg | throughput_mib_s_median | throughput_mib_s_stddev | latency_us_avg | latency_us_median | latency_us_stddev |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| fio_rand_read.json | 10 | 414655.53 | 415125.00 | 2205.92 | 1619.75 | 1621.58 | 8.62 | 308.46 | 308.10 | 1.65 |
+| fio_rand_write.json | 10 | 231084.90 | 155961.24 | 133771.19 | 902.68 | 609.22 | 522.54 | 807.87 | 823.57 | 493.86 |
+| fio_seq_read.json | 10 | 8741.70 | 6814.47 | 5042.05 | 8741.70 | 6814.47 | 5042.05 | 165.87 | 157.45 | 94.97 |
+| fio_seq_write.json | 10 | 1810.28 | 1531.77 | 555.73 | 1810.28 | 1531.77 | 555.73 | 596.65 | 651.65 | 150.47 |

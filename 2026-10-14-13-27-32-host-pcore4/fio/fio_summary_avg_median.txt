@@ -1,8 +1,8 @@
 fio summary (run01-run10)
 
-| file | count | iops_avg | iops_median | throughput_mib_s_avg | throughput_mib_s_median | latency_us_avg | latency_us_median |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| fio_rand_read.json | 10 | 627332.20 | 627356.97 | 2450.52 | 2450.61 | 203.87 | 203.87 |
-| fio_rand_write.json | 10 | 714728.81 | 715387.80 | 2791.91 | 2794.48 | 178.90 | 178.73 |
-| fio_seq_read.json | 10 | 3024.15 | 3186.51 | 3024.15 | 3186.51 | 333.84 | 313.69 |
-| fio_seq_write.json | 10 | 3724.13 | 3724.66 | 3724.13 | 3724.66 | 268.35 | 268.30 |
+| file | count | iops_avg | iops_median | iops_stddev | throughput_mib_s_avg | throughput_mib_s_median | throughput_mib_s_stddev | latency_us_avg | latency_us_median | latency_us_stddev |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| fio_rand_read.json | 10 | 627332.20 | 627356.97 | 128.97 | 2450.52 | 2450.61 | 0.50 | 203.87 | 203.87 | 0.04 |
+| fio_rand_write.json | 10 | 714728.81 | 715387.80 | 2353.24 | 2791.91 | 2794.48 | 9.19 | 178.90 | 178.73 | 0.59 |
+| fio_seq_read.json | 10 | 3024.15 | 3186.51 | 287.25 | 3024.15 | 3186.51 | 287.25 | 333.84 | 313.69 | 34.92 |
+| fio_seq_write.json | 10 | 3724.13 | 3724.66 | 2.30 | 3724.13 | 3724.66 | 2.30 | 268.35 | 268.30 | 0.17 |
