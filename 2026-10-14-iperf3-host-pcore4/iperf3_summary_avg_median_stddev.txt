@@ -1,0 +1,8 @@
+iperf3 summary (run01-run10)
+
+| protocol | count | throughput_avg_mbps | throughput_median_mbps | throughput_stddev_mbps | latency_metric | latency_avg_ms | latency_median_ms | latency_stddev_ms |
+|---|---:|---:|---:|---:|---|---:|---:|---:|
+| TCP | 10 | 927.749 | 936.851 | 20.459 | mean_rtt | 2.632 | 2.603 | 0.395 |
+| UDP | 10 | 955.948 | 955.953 | 0.211 | jitter_ms | 0.011402 | 0.010931 | 0.005177 |
+
+Note: TCP latency uses `mean_rtt` from the sender side. UDP latency uses `jitter_ms`.
