@@ -1,0 +1,5 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.1   4776  4368 pts/0    Ss+  15:51   0:00 /bin/bash
+root         786  0.0  0.1   6764  4196 pts/1    R+   16:35   0:00 ps aux --sort=-%mem
+root          15  0.0  0.1   4776  4172 pts/1    Ss   15:56   0:00 bash
+root         764 16.6  0.0   4644  3748 pts/1    S+   16:35   0:00 bash ./iperf3_benchmark.sh
