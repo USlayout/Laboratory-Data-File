@@ -1,0 +1,8 @@
+fio summary (KVM-Docker run01-run10)
+
+| file | count | iops_avg | iops_median | iops_stddev | throughput_mib_s_avg | throughput_mib_s_median | throughput_mib_s_stddev | latency_us_avg | latency_us_median | latency_us_stddev |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| fio_rand_read.json | 10 | 414759.46 | 414900.99 | 1145.24 | 1620.15 | 1620.71 | 4.47 | 308.38 | 308.27 | 0.85 |
+| fio_rand_write.json | 10 | 367671.42 | 367423.29 | 27761.06 | 1436.22 | 1435.25 | 108.44 | 349.91 | 348.45 | 26.55 |
+| fio_seq_read.json | 10 | 5114.10 | 4188.83 | 2394.51 | 5114.10 | 4188.83 | 2394.51 | 241.88 | 239.57 | 119.07 |
+| fio_seq_write.json | 10 | 3792.96 | 3439.57 | 1023.90 | 3792.96 | 3439.57 | 1023.90 | 283.63 | 290.39 | 77.62 |

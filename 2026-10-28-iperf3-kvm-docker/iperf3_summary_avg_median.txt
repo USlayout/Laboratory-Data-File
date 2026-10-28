@@ -1,0 +1,8 @@
+iperf3 summary (KVM-Docker run01-run10)
+
+| protocol | count | throughput_avg_mbps | throughput_median_mbps | throughput_stddev_mbps | latency_metric | latency_avg_ms | latency_median_ms | latency_stddev_ms |
+|---|---:|---:|---:|---:|---|---:|---:|---:|
+| TCP | 10 | 938.139 | 940.323 | 3.875 | mean_rtt | 3.097500 | 3.071500 | 1.291239 |
+| UDP | 10 | 999.737 | 999.993 | 0.499 | jitter_ms | 0.017927 | 0.017314 | 0.003882 |
+
+Note: TCP latency uses `mean_rtt` from the sender side. UDP latency uses `jitter_ms`.

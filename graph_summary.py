@@ -13,7 +13,20 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
 import numpy as np
+
+JAPANESE_FONT = next(
+    (
+        font
+        for font in ("Meiryo", "Yu Gothic", "MS Gothic", "Noto Sans CJK JP")
+        if any(entry.name == font for entry in font_manager.fontManager.ttflist)
+    ),
+    None,
+)
+if JAPANESE_FONT:
+    plt.rcParams["font.family"] = JAPANESE_FONT
+plt.rcParams["axes.unicode_minus"] = False
 
 
 @dataclass(frozen=True)
@@ -65,9 +78,10 @@ def parse_summary(path: Path) -> Summary:
         (
             label
             for token, label in (
+                ("kvm-docker", "KVM上のDocker"),
                 ("docker", "Docker"),
                 ("kvm", "KVM"),
-                ("host", "Host"),
+                ("host", "ホスト"),
             )
             if token in str(path).lower()
         ),
@@ -78,6 +92,7 @@ def parse_summary(path: Path) -> Summary:
             "Host": "kitalab",
             "KVM": "ubuntu-bench",
             "Docker": "99ba92c336df",
+            "KVM-Docker": "85f7f1633967",
         }
         fallback_host = host_by_environment.get(environment, "Unknown")
     else:
@@ -114,7 +129,18 @@ def metric_columns(summary: Summary) -> list[tuple[str, str, str, str | None]]:
 
 
 def display_name(column: str) -> str:
-    return column.replace("_", " ").title()
+    names = {
+        "iops": "IOPS",
+        "throughput_mib_s": "スループット (MiB/s)",
+        "latency_us": "レイテンシ (μs)",
+        "throughput": "スループット (Mbps)",
+        "latency": "レイテンシ (ms)",
+        "value": "測定値",
+        "cpu": "CPU",
+        "memory_read": "メモリ読み込み",
+        "memory_write": "メモリ書き込み",
+    }
+    return names.get(column, column.replace("_", " "))
 
 
 def safe_filename(path: Path, root: Path) -> str:
@@ -166,7 +192,7 @@ def plot_summary(summary: Summary, output_path: Path) -> None:
             )
         axis.set_title(display_name(base))
         axis.set_xticks(x, labels, rotation=25, ha="right")
-        axis.set_ylabel("Value")
+        axis.set_ylabel("値")
         axis.grid(axis="y", alpha=0.25)
         axis.legend()
 
@@ -178,7 +204,15 @@ def plot_summary(summary: Summary, output_path: Path) -> None:
 
 
 def benchmark_name(summary: Summary) -> str:
-    return summary.source.name.removesuffix("_summary_avg_median.txt")
+    return re.sub(r"_summary_avg_median(?:_[^.]*)?\.txt$", "", summary.source.name)
+
+
+def benchmark_display_name(name: str) -> str:
+    return {
+        "fio": "ストレージ (fio)",
+        "sysbench": "CPU・メモリ (sysbench)",
+        "iperf3": "ネットワーク (iperf3)",
+    }.get(name, name)
 
 
 def plot_comparison(summaries: list[Summary], output_path: Path) -> None:
@@ -200,7 +234,7 @@ def plot_comparison(summaries: list[Summary], output_path: Path) -> None:
     x = np.arange(len(categories))
     width = 0.75 / len(summaries)
     labels = [
-        f"{summary.environment}\n{summary.host}\n{summary.os.replace(' LTS', '')}"
+        f"{summary.environment}\nホスト: {summary.host}\nOS: {summary.os.replace(' LTS', '')}"
         for summary in summaries
     ]
 
@@ -238,27 +272,27 @@ def plot_comparison(summaries: list[Summary], output_path: Path) -> None:
                 label=summary.environment,
             )
         axis.set_title(display_name(base))
-        axis.set_xticks(x, categories)
-        axis.set_ylabel("Median")
+        axis.set_xticks(x, categories, rotation=20, ha="right")
+        axis.set_ylabel("中央値")
         axis.grid(axis="y", alpha=0.25)
-        axis.legend(labels=labels, title="Environment / host / OS")
+        axis.legend(
+            labels=labels,
+            title="環境 / ホスト / OS",
+            loc="upper left",
+            bbox_to_anchor=(1.02, 1),
+            borderaxespad=0,
+            fontsize=9,
+            title_fontsize=10,
+        )
 
     figure.suptitle(
-        f"{benchmark_name(first).upper()} median comparison by environment",
+        f"{benchmark_display_name(benchmark_name(first))}：環境別の中央値比較",
         fontsize=14,
     )
-    figure.tight_layout()
+    figure.tight_layout(rect=(0, 0, 0.76, 0.96))
     output_path.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(output_path, dpi=160, bbox_inches="tight")
     plt.close(figure)
-
-
-def write_index(output_dir: Path, summaries: list[Summary], files: list[Path]) -> None:
-    with (output_dir / "index.csv").open("w", newline="", encoding="utf-8") as output:
-        writer = csv.writer(output)
-        writer.writerow(["summary_file", "graph_file"])
-        for summary, graph in zip(summaries, files):
-            writer.writerow([summary.source, graph])
 
 
 def write_comparison_index(output_dir: Path, graphs: list[tuple[str, Path]]) -> None:
@@ -289,20 +323,11 @@ def main() -> None:
     args = parser.parse_args()
     root = args.root.resolve()
     output_dir = (args.output_dir or root / "Graph").resolve()
-    paths = sorted(root.rglob("*_summary_avg_median.txt"))
+    paths = sorted(root.rglob("*_summary_avg_median*.txt"))
     if not paths:
         raise FileNotFoundError(f"No *_summary_avg_median.txt files found under {root}")
 
     summaries = [parse_summary(path) for path in paths]
-    graph_paths: list[Path] = []
-    for summary in summaries:
-        graph_path = output_dir / f"{safe_filename(summary.source, root)}.png"
-        plot_summary(summary, graph_path)
-        graph_paths.append(graph_path)
-        print(f"Created: {graph_path}")
-    write_index(output_dir, summaries, graph_paths)
-    print(f"Created: {output_dir / 'index.csv'}")
-
     comparison_graphs: list[tuple[str, Path]] = []
     for benchmark, benchmark_summaries in _group_by_benchmark(summaries).items():
         if len(benchmark_summaries) < 2:

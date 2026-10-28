@@ -1,0 +1,4 @@
+benchmark,graph_file
+fio,C:\Users\soeno\GitHub\Laboratory-Data-File\graph\comparison_fio.png
+sysbench,C:\Users\soeno\GitHub\Laboratory-Data-File\graph\comparison_sysbench.png
+iperf3,C:\Users\soeno\GitHub\Laboratory-Data-File\graph\comparison_iperf3.png

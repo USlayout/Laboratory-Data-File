@@ -1,0 +1,7 @@
+sysbench summary (KVM-Docker run01-run10)
+
+| test | count | average | median | stddev | unit |
+|---|---:|---:|---:|---:|---|
+| cpu | 10 | 6032.96 | 6033.22 | 1.14 | events/sec |
+| memory_read | 10 | 32453.48 | 32447.58 | 96.20 | MiB/sec |
+| memory_write | 10 | 8911.99 | 8966.33 | 387.49 | MiB/sec |

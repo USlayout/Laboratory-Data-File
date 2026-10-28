@@ -146,7 +146,7 @@ iperf3専用実行では `iperf3/iperf3_tcp.json` と `iperf3/iperf3_udp.json` �
 
 ## 8. 集計値のグラフ化
 
-`*_summary_avg_median.txt` を再帰的に読み込み、`Graph/` に PNG を出力します。`comparison_*.png` は最終値として中央値を使い、Host・KVM・Docker の環境を横並びで比較します。ホスト名とOSも凡例に表示し、標準偏差が集計ファイルに含まれる場合はエラーバーとして表示します。個別ファイルのグラフも併せて出力されます。
+`*_summary_avg_median.txt` を再帰的に読み込み、`Graph/` に比較用 PNG のみを出力します。`comparison_*.png` は最終値として中央値を使い、Host・KVM・Docker などの環境を横並びで比較します。ホスト名とOSも凡例に表示し、標準偏差が集計ファイルに含まれる場合はエラーバーとして表示します。
 
 ```powershell
 python -m pip install matplotlib
@@ -159,7 +159,7 @@ python graph_summary.py
 python graph_summary.py --root . --output-dir Graph
 ```
 
-環境比較グラフの一覧は `Graph/comparison_index.csv`、個別グラフと元の集計ファイルの対応は `Graph/index.csv` に記録されます。
+環境比較グラフの一覧は `Graph/comparison_index.csv` に記録されます。
 
 ## 9. GitHubアップロード
 
