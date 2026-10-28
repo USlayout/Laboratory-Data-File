@@ -131,16 +131,33 @@ def metric_columns(summary: Summary) -> list[tuple[str, str, str, str | None]]:
 def display_name(column: str) -> str:
     names = {
         "iops": "IOPS",
-        "throughput_mib_s": "スループット (MiB/s)",
-        "latency_us": "レイテンシ (μs)",
-        "throughput": "スループット (Mbps)",
-        "latency": "レイテンシ (ms)",
+        "throughput_mib_s": "スループット",
+        "latency_us": "レイテンシ",
+        "throughput": "スループット",
+        "latency": "レイテンシ",
         "value": "測定値",
         "cpu": "CPU",
         "memory_read": "メモリ読み込み",
         "memory_write": "メモリ書き込み",
     }
     return names.get(column, column.replace("_", " "))
+
+
+def metric_unit(summary: Summary, base: str) -> str | None:
+    if base == "value" and "unit" in summary.columns:
+        units = {row["unit"] for row in summary.rows}
+        return next(iter(units)) if len(units) == 1 else "項目ごとに異なる単位"
+    return {
+        "iops": "IOPS",
+        "throughput_mib_s": "MiB/s",
+        "latency_us": "μs",
+        "throughput": "Mbps",
+        "latency": "ms",
+    }.get(base)
+
+
+def metric_label(summary: Summary, base: str) -> str:
+    return display_name(base)
 
 
 def safe_filename(path: Path, root: Path) -> str:
@@ -188,9 +205,9 @@ def plot_summary(summary: Summary, output_path: Path) -> None:
                 width,
                 yerr=errors_by_stat[statistic],
                 capsize=3,
-                label=statistic.title(),
+                label={"avg": "平均", "median": "中央値"}.get(statistic, statistic),
             )
-        axis.set_title(display_name(base))
+        axis.set_title(metric_label(summary, base))
         axis.set_xticks(x, labels, rotation=25, ha="right")
         axis.set_ylabel("値")
         axis.grid(axis="y", alpha=0.25)
@@ -230,7 +247,15 @@ def plot_comparison(summaries: list[Summary], output_path: Path) -> None:
         squeeze=False,
     )
     category_column = first.columns[0]
-    categories = [row[category_column] for row in first.rows]
+    category_keys = [row[category_column] for row in first.rows]
+    categories = [
+        (
+            f"{row[category_column]}\n（{row['unit']}）"
+            if category_column == "test" and "unit" in first.columns
+            else row[category_column]
+        )
+        for row in first.rows
+    ]
     x = np.arange(len(categories))
     width = 0.75 / len(summaries)
     labels = [
@@ -254,11 +279,13 @@ def plot_comparison(summaries: list[Summary], output_path: Path) -> None:
             )
             _, _, column, stddev_column = metric
             row_by_category = {row[category_column]: row for row in summary.rows}
-            values = [float(row_by_category[category][column]) for category in categories]
+            values = [
+                float(row_by_category[category][column]) for category in category_keys
+            ]
             errors = (
                 [
                     float(row_by_category[category][stddev_column])
-                    for category in categories
+                    for category in category_keys
                 ]
                 if stddev_column
                 else None
@@ -271,9 +298,10 @@ def plot_comparison(summaries: list[Summary], output_path: Path) -> None:
                 capsize=3,
                 label=summary.environment,
             )
-        axis.set_title(display_name(base))
+        axis.set_title(metric_label(first, base))
         axis.set_xticks(x, categories, rotation=20, ha="right")
-        axis.set_ylabel("中央値")
+        unit = metric_unit(first, base)
+        axis.set_ylabel(f"中央値（{unit}）" if unit else "中央値")
         axis.grid(axis="y", alpha=0.25)
         axis.legend(
             labels=labels,
