@@ -14,6 +14,7 @@
 | `sysbench_benchmark.sh` | CPU、メモリREAD/WRITEを1セット測定 |
 | `fio_benchmark.sh` | 順次READ/WRITE、ランダムREAD/WRITEを1セット測定 |
 | `iperf3_benchmark.sh` | TCPとUDPを1セット測定しGitHubに保存 |
+| `graph_summary.py` | `*_summary_avg_median.txt` を読み込み、`Graph/` にグラフを出力 |
 
 ## 2. Ubuntuへの導入
 
@@ -143,7 +144,24 @@ iperf3専用実行では `iperf3/iperf3_tcp.json` と `iperf3/iperf3_udp.json` �
 
 10回の代表値には、研究条件に合わせて**中央値**を用います。元データは削除せず、中央値のほか最小・最大値やばらつきも残すと比較しやすくなります。この配布版に中央値の自動集計機能はありません。
 
-## 8. GitHubアップロード
+## 8. 集計値のグラフ化
+
+`*_summary_avg_median.txt` を再帰的に読み込み、`Graph/` に PNG を出力します。`comparison_*.png` は最終値として中央値を使い、Host・KVM・Docker の環境を横並びで比較します。ホスト名とOSも凡例に表示し、標準偏差が集計ファイルに含まれる場合はエラーバーとして表示します。個別ファイルのグラフも併せて出力されます。
+
+```powershell
+python -m pip install matplotlib
+python graph_summary.py
+```
+
+入力場所や出力場所を変更する場合：
+
+```powershell
+python graph_summary.py --root . --output-dir Graph
+```
+
+環境比較グラフの一覧は `Graph/comparison_index.csv`、個別グラフと元の集計ファイルの対応は `Graph/index.csv` に記録されます。
+
+## 9. GitHubアップロード
 
 先に保存先リポジトリをcloneしておきます。
 
