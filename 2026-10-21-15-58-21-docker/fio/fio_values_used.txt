@@ -1,0 +1,58 @@
+FIO Docker values used for summary calculation
+
+Each JSON file contributes one measurement for its FIO test.
+
+Value source and conversion:
+- IOPS: jobs[0].read/write.iops -> iops
+- throughput: jobs[0].read/write.bw_bytes / 1024 / 1024 -> throughput_mib_s
+- latency: jobs[0].read/write.lat_ns.mean / 1,000 -> latency_us
+
+For each FIO file, the iops, throughput_mib_s, and latency_us columns are used to calculate:
+- average = sum of the 10 measurements / 10
+- median = average of the 5th and 6th values after sorting
+- population standard deviation = sqrt(sum((value - average)^2) / 10)
+
+Extracted measurements: 40
+
+| run | file | IOPS | throughput (MiB/s) | latency (us) |
+|---|---|---:|---:|---:|
+| run01 | fio_rand_read.json | 610526.249125 | 2384.868160 | 209.435744 |
+| run01 | fio_rand_write.json | 523432.018933 | 2044.656323 | 244.018374 |
+| run01 | fio_seq_read.json | 3188.527049 | 3188.527049 | 313.482859 |
+| run01 | fio_seq_write.json | 3719.042699 | 3719.042698 | 268.713200 |
+| run02 | fio_rand_read.json | 610632.345588 | 2385.282599 | 209.402125 |
+| run02 | fio_rand_write.json | 523804.406520 | 2046.110963 | 243.853098 |
+| run02 | fio_seq_read.json | 3178.094064 | 3178.094063 | 314.514465 |
+| run02 | fio_seq_write.json | 3724.242525 | 3724.242525 | 268.344851 |
+| run03 | fio_rand_read.json | 611003.533216 | 2386.732552 | 209.271024 |
+| run03 | fio_rand_write.json | 523748.641712 | 2045.893131 | 243.882902 |
+| run03 | fio_seq_read.json | 2499.883337 | 2499.883337 | 399.871810 |
+| run03 | fio_seq_write.json | 3724.809173 | 3724.809173 | 268.306871 |
+| run04 | fio_rand_read.json | 610615.379487 | 2385.216326 | 209.403824 |
+| run04 | fio_rand_write.json | 523376.416478 | 2044.439126 | 244.047165 |
+| run04 | fio_seq_read.json | 3191.026966 | 3191.026965 | 313.238619 |
+| run04 | fio_seq_write.json | 3725.009166 | 3725.009166 | 268.285042 |
+| run05 | fio_rand_read.json | 610854.538182 | 2386.150539 | 209.330428 |
+| run05 | fio_rand_write.json | 523536.448785 | 2045.064253 | 243.949177 |
+| run05 | fio_seq_read.json | 3185.160495 | 3185.160494 | 313.813370 |
+| run05 | fio_seq_write.json | 3727.375754 | 3727.375753 | 268.113277 |
+| run06 | fio_rand_read.json | 610492.316923 | 2384.735613 | 209.450069 |
+| run06 | fio_rand_write.json | 524171.694277 | 2047.545680 | 243.685481 |
+| run06 | fio_seq_read.json | 3057.531416 | 3057.531415 | 326.917012 |
+| run06 | fio_seq_write.json | 3726.960637 | 3726.960637 | 268.149694 |
+| run07 | fio_rand_read.json | 610751.141629 | 2385.746647 | 209.363134 |
+| run07 | fio_rand_write.json | 523000.566648 | 2042.970963 | 244.232236 |
+| run07 | fio_seq_read.json | 2587.747075 | 2587.747075 | 386.292798 |
+| run07 | fio_seq_write.json | 3724.009200 | 3724.009199 | 268.363086 |
+| run08 | fio_rand_read.json | 610585.580481 | 2385.099923 | 209.416611 |
+| run08 | fio_rand_write.json | 521388.520383 | 2036.673907 | 244.964517 |
+| run08 | fio_seq_read.json | 3189.966667 | 3189.966666 | 313.349758 |
+| run08 | fio_seq_write.json | 3724.509183 | 3724.509183 | 268.322093 |
+| run09 | fio_rand_read.json | 610593.813540 | 2385.132084 | 209.414750 |
+| run09 | fio_rand_write.json | 522823.605880 | 2042.279710 | 244.304479 |
+| run09 | fio_seq_read.json | 3187.527082 | 3187.527081 | 313.579231 |
+| run09 | fio_seq_write.json | 3728.209060 | 3728.209059 | 268.058394 |
+| run10 | fio_rand_read.json | 610661.944602 | 2385.398221 | 209.391101 |
+| run10 | fio_rand_write.json | 523719.976001 | 2045.781156 | 243.890443 |
+| run10 | fio_seq_read.json | 2520.849305 | 2520.849304 | 396.534999 |
+| run10 | fio_seq_write.json | 3724.475851 | 3724.475850 | 268.324128 |

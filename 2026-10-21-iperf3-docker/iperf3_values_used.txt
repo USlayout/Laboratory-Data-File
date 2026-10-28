@@ -1,0 +1,39 @@
+iperf3 Docker values used for summary calculation
+
+Each JSON file contributes one measurement for its protocol.
+
+Value source and conversion:
+- TCP throughput: end.sum_sent.bits_per_second / 1,000,000 -> throughput_mbps
+- UDP throughput: end.sum.bits_per_second / 1,000,000 -> throughput_mbps
+- TCP latency: end.streams[0].sender.mean_rtt / 1,000 -> latency_ms
+- UDP latency: end.sum.jitter_ms -> latency_ms (already milliseconds)
+
+The throughput_mbps and latency_ms columns are used for each protocol's:
+- average = sum of the 10 measurements / 10
+- median = average of the 5th and 6th values after sorting
+- population standard deviation = sqrt(sum((value - average)^2) / 10)
+
+Extracted measurements: 20
+
+| run | protocol | throughput (Mbps) | latency metric | latency (ms) |
+|---|---|---:|---|---:|
+| 2026-10-21-16-33-49-iperf3-docker | TCP | 941.416763 | mean_rtt | 3.137000 |
+| 2026-10-21-16-33-49-iperf3-docker | UDP | 999.994316 | jitter_ms | 0.018416 |
+| 2026-10-21-16-34-53-iperf3-docker | TCP | 939.575210 | mean_rtt | 4.137000 |
+| 2026-10-21-16-34-53-iperf3-docker | UDP | 999.995182 | jitter_ms | 0.021915 |
+| 2026-10-21-16-36-51-iperf3-docker | TCP | 929.712497 | mean_rtt | 2.597000 |
+| 2026-10-21-16-36-51-iperf3-docker | UDP | 999.994897 | jitter_ms | 0.018201 |
+| 2026-10-21-16-37-59-iperf3-docker | TCP | 938.502066 | mean_rtt | 3.290000 |
+| 2026-10-21-16-37-59-iperf3-docker | UDP | 999.994507 | jitter_ms | 0.015821 |
+| 2026-10-21-16-39-23-iperf3-docker | TCP | 939.159028 | mean_rtt | 2.844000 |
+| 2026-10-21-16-39-23-iperf3-docker | UDP | 999.996103 | jitter_ms | 0.017882 |
+| 2026-10-21-16-40-35-iperf3-docker | TCP | 928.291107 | mean_rtt | 2.119000 |
+| 2026-10-21-16-40-35-iperf3-docker | UDP | 999.995335 | jitter_ms | 0.009976 |
+| 2026-10-21-16-41-42-iperf3-docker | TCP | 933.595495 | mean_rtt | 3.724000 |
+| 2026-10-21-16-41-42-iperf3-docker | UDP | 999.995430 | jitter_ms | 0.018162 |
+| 2026-10-21-16-42-51-iperf3-docker | TCP | 936.527584 | mean_rtt | 3.457000 |
+| 2026-10-21-16-42-51-iperf3-docker | UDP | 999.995363 | jitter_ms | 0.020105 |
+| 2026-10-21-16-43-56-iperf3-docker | TCP | 915.705826 | mean_rtt | 1.860000 |
+| 2026-10-21-16-43-56-iperf3-docker | UDP | 999.994822 | jitter_ms | 0.018846 |
+| 2026-10-21-16-45-02-iperf3-docker | TCP | 933.633339 | mean_rtt | 3.406000 |
+| 2026-10-21-16-45-02-iperf3-docker | UDP | 999.995495 | jitter_ms | 0.026870 |
