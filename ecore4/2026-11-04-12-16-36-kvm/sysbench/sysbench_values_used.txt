@@ -1,0 +1,46 @@
+sysbench values used for summary calculation
+
+Source files and values:
+- cpu: CPU speed -> events per second
+- memory_read: MiB transferred -> MiB/sec
+- memory_write: MiB transferred -> MiB/sec
+
+For each test, the value column is used to calculate:
+- average = sum of the 10 measurements / 10
+- median = average of the 5th and 6th values after sorting
+- population standard deviation = sqrt(sum((value - average)^2) / 10)
+
+Extracted measurements: 30
+
+| run | test | value | unit | source metric |
+|---|---|---:|---|---|
+| run01 | cpu | 5632.920000 | events/sec | CPU speed: events per second |
+| run01 | memory_read | 17071.090000 | MiB/sec | MiB transferred: read |
+| run01 | memory_write | 11658.170000 | MiB/sec | MiB transferred: write |
+| run02 | cpu | 5635.370000 | events/sec | CPU speed: events per second |
+| run02 | memory_read | 17055.520000 | MiB/sec | MiB transferred: read |
+| run02 | memory_write | 11650.890000 | MiB/sec | MiB transferred: write |
+| run03 | cpu | 5636.590000 | events/sec | CPU speed: events per second |
+| run03 | memory_read | 16993.350000 | MiB/sec | MiB transferred: read |
+| run03 | memory_write | 11637.660000 | MiB/sec | MiB transferred: write |
+| run04 | cpu | 5634.890000 | events/sec | CPU speed: events per second |
+| run04 | memory_read | 17044.540000 | MiB/sec | MiB transferred: read |
+| run04 | memory_write | 11617.890000 | MiB/sec | MiB transferred: write |
+| run05 | cpu | 5637.160000 | events/sec | CPU speed: events per second |
+| run05 | memory_read | 17046.430000 | MiB/sec | MiB transferred: read |
+| run05 | memory_write | 11658.290000 | MiB/sec | MiB transferred: write |
+| run06 | cpu | 5637.340000 | events/sec | CPU speed: events per second |
+| run06 | memory_read | 16935.340000 | MiB/sec | MiB transferred: read |
+| run06 | memory_write | 11647.720000 | MiB/sec | MiB transferred: write |
+| run07 | cpu | 5634.970000 | events/sec | CPU speed: events per second |
+| run07 | memory_read | 17035.250000 | MiB/sec | MiB transferred: read |
+| run07 | memory_write | 11658.400000 | MiB/sec | MiB transferred: write |
+| run08 | cpu | 5638.380000 | events/sec | CPU speed: events per second |
+| run08 | memory_read | 17053.720000 | MiB/sec | MiB transferred: read |
+| run08 | memory_write | 11596.300000 | MiB/sec | MiB transferred: write |
+| run09 | cpu | 5634.620000 | events/sec | CPU speed: events per second |
+| run09 | memory_read | 16987.500000 | MiB/sec | MiB transferred: read |
+| run09 | memory_write | 11584.250000 | MiB/sec | MiB transferred: write |
+| run10 | cpu | 5639.290000 | events/sec | CPU speed: events per second |
+| run10 | memory_read | 17030.800000 | MiB/sec | MiB transferred: read |
+| run10 | memory_write | 11649.510000 | MiB/sec | MiB transferred: write |
