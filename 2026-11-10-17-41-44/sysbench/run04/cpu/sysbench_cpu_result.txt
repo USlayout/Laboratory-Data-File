@@ -1,0 +1,31 @@
+sysbench 1.0.20 (using system LuaJIT 2.1.1761786044)
+
+Running the test with following options:
+Number of threads: 4
+Initializing random number generator from current time
+
+
+Prime numbers limit: 20000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:  6059.74
+
+General statistics:
+    total time:                          60.0006s
+    total number of events:              363594
+
+Latency (ms):
+         min:                                    0.65
+         avg:                                    0.66
+         max:                                    0.80
+         95th percentile:                        0.67
+         sum:                               239964.67
+
+Threads fairness:
+    events (avg/stddev):           90898.5000/38.60
+    execution time (avg/stddev):   59.9912/0.00
+
