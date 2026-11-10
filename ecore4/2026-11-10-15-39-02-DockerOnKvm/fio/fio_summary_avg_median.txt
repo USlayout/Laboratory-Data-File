@@ -1,0 +1,16 @@
+FIO summary (run01-run10)
+
+| test | count | metric | average | median | stddev | unit |
+|---|---:|---|---:|---:|---:|---|
+| rand_read | 10 | IOPS | 428893.59 | 432755.26 | 10517.31 | IOPS |
+| rand_read | 10 | throughput | 1675.37 | 1690.45 | 41.08 | MiB/sec |
+| rand_read | 10 | latency | 298.37 | 295.52 | 7.51 | us |
+| rand_write | 10 | IOPS | 362393.93 | 397653.38 | 88548.24 | IOPS |
+| rand_write | 10 | throughput | 1415.60 | 1553.33 | 345.89 | MiB/sec |
+| rand_write | 10 | latency | 389.68 | 321.69 | 153.29 | us |
+| seq_read | 10 | IOPS | 4419.67 | 3768.86 | 2927.97 | IOPS |
+| seq_read | 10 | throughput | 4419.67 | 3768.86 | 2927.97 | MiB/sec |
+| seq_read | 10 | latency | 364.41 | 265.05 | 317.38 | us |
+| seq_write | 10 | IOPS | 3623.84 | 3353.64 | 1273.48 | IOPS |
+| seq_write | 10 | throughput | 3623.84 | 3353.64 | 1273.48 | MiB/sec |
+| seq_write | 10 | latency | 313.33 | 298.07 | 110.90 | us |

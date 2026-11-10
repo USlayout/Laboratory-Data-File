@@ -1,0 +1,7 @@
+sysbench summary (run01-run10)
+
+| test | count | average | median | stddev | unit |
+|---|---:|---:|---:|---:|---|
+| cpu | 10 | 11240.57 | 11242.51 | 5.41 | events/sec |
+| memory_read | 10 | 33525.80 | 33639.27 | 346.65 | MiB/sec |
+| memory_write | 10 | 14115.97 | 14100.67 | 609.05 | MiB/sec |

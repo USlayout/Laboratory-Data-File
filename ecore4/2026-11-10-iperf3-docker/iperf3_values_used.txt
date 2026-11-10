@@ -1,0 +1,37 @@
+iperf3 values used for summary calculation
+
+Value source and conversion:
+- TCP throughput: end.sum_sent.bits_per_second / 1,000,000 -> Mbps
+- UDP throughput: end.sum.bits_per_second / 1,000,000 -> Mbps
+- TCP latency: end.streams[0].sender.mean_rtt / 1,000 -> ms
+- UDP latency: end.sum.jitter_ms -> ms
+
+For each protocol, the 10 measurements are used to calculate:
+- average = sum(values) / 10
+- median = average of the 5th and 6th values after sorting
+- population standard deviation = sqrt(sum((x - average)^2) / 10)
+
+Extracted measurements: 20
+
+| run | protocol | throughput (Mbps) | latency metric | latency (ms) |
+|---|---|---:|---|---:|
+| 2026-11-10-14-00-07-iperf3 | TCP | 824.588914 | mean_rtt | 8.077000 |
+| 2026-11-10-14-00-07-iperf3 | UDP | 999.991561 | jitter_ms | 0.026062 |
+| 2026-11-10-14-02-03-iperf3 | TCP | 941.828054 | mean_rtt | 3.394000 |
+| 2026-11-10-14-02-03-iperf3 | UDP | 999.990781 | jitter_ms | 0.024420 |
+| 2026-11-10-14-03-10-iperf3 | TCP | 941.679116 | mean_rtt | 5.757000 |
+| 2026-11-10-14-03-10-iperf3 | UDP | 999.992400 | jitter_ms | 0.017475 |
+| 2026-11-10-14-04-54-iperf3 | TCP | 940.562509 | mean_rtt | 3.418000 |
+| 2026-11-10-14-04-54-iperf3 | UDP | 999.989551 | jitter_ms | 0.016488 |
+| 2026-11-10-14-06-20-iperf3 | TCP | 941.863413 | mean_rtt | 3.187000 |
+| 2026-11-10-14-06-20-iperf3 | UDP | 999.994656 | jitter_ms | 0.015767 |
+| 2026-11-10-14-07-50-iperf3 | TCP | 935.716628 | mean_rtt | 4.062000 |
+| 2026-11-10-14-07-50-iperf3 | UDP | 999.992253 | jitter_ms | 0.015386 |
+| 2026-11-10-14-11-37-iperf3 | TCP | 934.416577 | mean_rtt | 2.699000 |
+| 2026-11-10-14-11-37-iperf3 | UDP | 999.990603 | jitter_ms | 0.015832 |
+| 2026-11-10-14-15-41-iperf3 | TCP | 940.698456 | mean_rtt | 4.441000 |
+| 2026-11-10-14-15-41-iperf3 | UDP | 999.992136 | jitter_ms | 0.023024 |
+| 2026-11-10-14-19-00-iperf3 | TCP | 939.441540 | mean_rtt | 2.394000 |
+| 2026-11-10-14-19-00-iperf3 | UDP | 999.991897 | jitter_ms | 0.010758 |
+| 2026-11-10-14-20-10-iperf3 | TCP | 934.660705 | mean_rtt | 4.282000 |
+| 2026-11-10-14-20-10-iperf3 | UDP | 999.990790 | jitter_ms | 0.015000 |
