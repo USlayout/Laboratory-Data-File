@@ -1,0 +1,18 @@
+[Unit]
+Description=Lightweight Ubuntu web resource monitor
+
+[Service]
+Type=simple
+# Replace this path with the actual absolute path on Ubuntu.
+ExecStart=/usr/bin/python3 /absolute/path/resource-monitor-20261116/monitor.py --interval 2
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+RestrictAddressFamilies=AF_INET AF_INET6
+UMask=0077
+
+[Install]
+WantedBy=default.target

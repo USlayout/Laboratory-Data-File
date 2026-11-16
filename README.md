@@ -10,8 +10,8 @@
 |---|---|
 | `benchmark.conf` | 実験回数、CPU番号、測定時間、保存先などを設定 |
 | `common.sh` | 共通設定、環境情報収集、GitHubアップロード |
-| `run_all.sh` | sysbenchとfioを指定回数ずつ実行 |
-| `sysbench_benchmark.sh` | CPU、メモリREAD/WRITEを1セット測定 |
+| `sysbench_cpu_benchmark.sh` | CPUを独立して指定回数測定 |
+| `sysbench_memory_benchmark.sh` | メモリREAD/WRITEを独立して指定回数測定 |
 | `fio_benchmark.sh` | 順次READ/WRITE、ランダムREAD/WRITEを1セット測定 |
 | `iperf3_benchmark.sh` | TCPとUDPを1セット測定しGitHubに保存 |
 | `graph_summary.py` | `*_summary_avg_median.txt` を読み込み、`Graph/` にグラフを出力 |
@@ -30,8 +30,8 @@ ZIPを展開し、スクリプトを同じディレクトリに置きます。
 ```bash
 unzip benchmark_reviewed.zip
 cd benchmark_reviewed
-chmod +x run_all.sh sysbench_benchmark.sh fio_benchmark.sh iperf3_benchmark.sh
-bash -n common.sh run_all.sh sysbench_benchmark.sh fio_benchmark.sh iperf3_benchmark.sh
+chmod +x sysbench_cpu_benchmark.sh sysbench_memory_benchmark.sh fio_benchmark.sh iperf3_benchmark.sh
+bash -n common.sh sysbench_cpu_benchmark.sh sysbench_memory_benchmark.sh fio_benchmark.sh iperf3_benchmark.sh
 ```
 
 ## 3. CPU番号の確認と固定
@@ -83,49 +83,60 @@ GIT_BRANCH="main"
 
 実験対象ディスクと同じファイルシステム上に `BASE_DIR` を置いてください。ルートディスクを測りたいのか、専用データディスクを測りたいのか明示し、空き容量を確保してください。
 
-## 5. sysbench・fioを各10回実行
+## 5. CPU・メモリ・fioを個別に実行
+
+`run_all.sh` と旧 `sysbench_benchmark.sh` は廃止しました。各スクリプトが環境情報収集・結果保存・最後のGitHubアップロードまで行います。
 
 ```bash
-./run_all.sh host-pcore4
+# 1回の試運転（ラベルは任意）
+bash sysbench_cpu_benchmark.sh --runs 1 host-pcore4
+bash sysbench_memory_benchmark.sh --runs 1 host-pcore4
+bash fio_benchmark.sh --runs 1 host-pcore4
+
+# それぞれ10回の本測定
+bash sysbench_cpu_benchmark.sh --runs 10 host-pcore4
+bash sysbench_memory_benchmark.sh --runs 10 host-pcore4
+bash fio_benchmark.sh --runs 10 host-pcore4
 ```
 
-ラベル `host-pcore4` は任意です。`run_all.sh` はシステム情報を取得した後、sysbenchのCPU/メモリ測定を10セット、fioの4種類のI/O測定を10セット行い、最後にGitHubへアップロードします。**iperf3はこのコマンドでは実行されません。**
+`--runs` を省略すると `BENCHMARK_RUNS`（既定10回）を使用します。メモリはREAD/WRITE、fioは4種類のI/Oを1セットとして数えます。CPUとメモリは別の実験ディレクトリに保存します。`--help` で使用方法を表示します。
 
-途中で失敗すると `set -e` により停止します。結果はローカルに残りますが、最後のGitHubアップロードまで到達しない場合があります。
+途中で失敗すると停止し、結果はローカルに残ります。最後まで完走しない場合はGitHubアップロードを行いません。
 
-## 6. iperf3を手動で1回ずつ実行
+## 6. iperf3を1回または10回実行
 
-**サーバー側（別PC等）：**
+サーバー側で起動します（単発終了する `-1` は付けません）。
 
 ```bash
 iperf3 -s
 ```
 
-**クライアント側（測定対象）：**
+クライアント側：
 
 ```bash
-# benchmark.confのIPERF_SERVER_IPを確認してから
-./iperf3_benchmark.sh host-pcore4
+bash iperf3_benchmark.sh --runs 1 host-pcore4
+bash iperf3_benchmark.sh --runs 10 host-pcore4
 ```
 
-1回の起動でTCPを30秒、UDPを30秒測定し、それぞれJSONで保存します。10回測定する場合は、ネットワーク状態を確認しながらこのコマンドを**手動で10回**実行してください。各回で独立したタイムスタンプ付きディレクトリが作られます。
+省略時は `IPERF_RUNS=1` を使用します。1セットはTCPとUDP各30秒です。UDPの目標送信レートは従来通り1 Gbit/sです。
 
-UDPは現状 `-b 1G`（目標送信レート1 Gbit/s）に固定されています。リンク速度・パケットロス・サーバー性能に応じて変更を検討し、変更した場合は研究条件にも明記してください。UDPの目標帯域と実効スループットは別物です。
-
-接続確認：
+`benchmark.conf` の以下の値でサーバー待機を調整できます。
 
 ```bash
-nc -z -w 3 192.168.50.65 5201
+IPERF_RUNS=1
+IPERF_INTERVAL_SECONDS=10
+IPERF_RETRIES=3
+IPERF_RETRY_INTERVAL_SECONDS=10
 ```
 
-ファイアウォール、IPアドレス、サーバーの起動状態、TCP/UDPの疎通を確認してください。
+TCP→UDP間と各セット間に10秒待ちます。失敗した測定は10秒待って最大3回再試行します（初回を含め最大4試行）。成功した結果だけを通常のJSON名で保存し、失敗した試行のJSONと各試行のstderrも残します。上限を超えると該当回に `FAILED.txt` を保存して停止します。待機や再試行でも、停止中・未起動のサーバー自体は復旧できません。
 
 ## 7. 結果の保存先と見方
 
 保存先の例：
 
 ```text
-~/benchmark/2026-10-14-13-00-00-host-pcore4/
+~/benchmark/2026-10-14-sysbench-cpu-host-pcore4/
 ├── metadata.txt
 ├── system_info/
 ├── sysbench/
@@ -135,7 +146,7 @@ nc -z -w 3 192.168.50.65 5201
     └── run01/fio_seq_write.json
 ```
 
-iperf3専用実行では `iperf3/iperf3_tcp.json` と `iperf3/iperf3_udp.json` が保存されます。
+iperf3専用実行では `iperf3/run01/iperf3_tcp.json` と `iperf3/run01/iperf3_udp.json` が保存されます。
 
 - sysbench CPU：`events per second`（イベント/秒）を比較します。
 - sysbench memory：`transferred` に表示される転送レートを確認します。

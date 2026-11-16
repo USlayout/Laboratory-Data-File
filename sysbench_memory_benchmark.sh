@@ -1,37 +1,13 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
-
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 RUN_DIR RUN_NUMBER"
-    exit 1
-fi
-
-RUN_DIR="$1"
-RUN_NUMBER="$2"
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/common.sh"
-
-
-
+parse_benchmark_args "$@"
+start_benchmark sysbench-memory sysbench
+for ((RUN_NUMBER=1; RUN_NUMBER<=BENCHMARK_RUNS; RUN_NUMBER++)); do
 OUT_DIR="${RUN_DIR}/sysbench/run$(printf '%02d' "${RUN_NUMBER}")"
-
-mkdir -p "${OUT_DIR}/cpu"
 mkdir -p "${OUT_DIR}/memory"
-
-echo "Running sysbench CPU..."
-
-"${CPU_PREFIX[@]}" sysbench cpu \
-    --cpu-max-prime="${SYSBENCH_CPU_MAX_PRIME}" \
-    --threads="${SYSBENCH_THREADS}" \
-    --time="${SYSBENCH_CPU_TIME}" \
-    run \
-    > "${OUT_DIR}/cpu/sysbench_cpu_result.txt" 2>&1
-
-
 echo "Running sysbench memory WRITE..."
 
 "${CPU_PREFIX[@]}" sysbench memory \
@@ -53,4 +29,6 @@ echo "Running sysbench memory READ..."
     run \
     > "${OUT_DIR}/memory/sysbench_memory_read.txt" 2>&1
 
-echo "sysbench run ${RUN_NUMBER} complete"
+
+done
+finish_benchmark

@@ -40,6 +40,54 @@ log() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
 }
 
+# 各スクリプトの共通CLI。ラベルのみの指定も可能。
+parse_benchmark_args() {
+    LABEL=""
+    local label_seen=0
+    while (( $# )); do
+        case "$1" in
+            --runs)
+                if (( $# < 2 )); then echo 'ERROR: --runs requires a number' >&2; exit 1; fi
+                BENCHMARK_RUNS="$2"
+                shift 2
+                ;;
+            --help|-h)
+                echo "Usage: $0 [--runs 1|10] [LABEL]"
+                exit 0
+                ;;
+            -*) echo "ERROR: Unknown option: $1" >&2; exit 1 ;;
+            *)
+                if (( label_seen )); then echo 'ERROR: Specify only one label' >&2; exit 1; fi
+                LABEL="$1"
+                label_seen=1
+                shift
+                ;;
+        esac
+    done
+    if [[ ! "${BENCHMARK_RUNS}" =~ ^[1-9][0-9]*$ ]]; then
+        echo 'ERROR: Run count must be a positive integer' >&2
+        exit 1
+    fi
+    if [[ "${LABEL}" == *'/'* || "${LABEL}" == *'\\'* ]]; then
+        echo 'ERROR: Label must not contain path separators' >&2
+        exit 1
+    fi
+}
+
+start_benchmark() {
+    local kind="$1"
+    require_command "$2"
+    require_command git
+    init_experiment "${kind}${LABEL:+-${LABEL}}"
+    collect_system_info
+    write_metadata
+}
+
+finish_benchmark() {
+    upload_to_github
+    log "Benchmark complete: ${RUN_DIR}"
+}
+
 
 # =============================================================================
 # 必要コマンド確認
@@ -62,7 +110,7 @@ require_command() {
 init_experiment() {
     LABEL="${1:-}"
 
-    TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
+    TIMESTAMP=$(date +"%Y-%m-%d")
 
     if [ -n "${LABEL}" ]; then
         RUN_NAME="${TIMESTAMP}-${LABEL}"
@@ -70,16 +118,29 @@ init_experiment() {
         RUN_NAME="${TIMESTAMP}"
     fi
 
-    RUN_DIR="${BASE_DIR}/${RUN_NAME}"
-    GITHUB_RUN_DIR="${GITHUB_REPO_DIR}/${RUN_NAME}"
+    # 同日の再実行は連番にして、既存の測定結果への上書きを防ぐ。
+    local base_run_name="${RUN_NAME}"
+    local suffix=2
+    mkdir -p "${BASE_DIR}"
+    while true; do
+        RUN_DIR="${BASE_DIR}/${RUN_NAME}"
+        GITHUB_RUN_DIR="${GITHUB_REPO_DIR}/${RUN_NAME}"
+        if [ ! -e "${GITHUB_RUN_DIR}" ] && mkdir "${RUN_DIR}" 2>/dev/null; then
+            break
+        fi
+        if [ ! -e "${RUN_DIR}" ] && [ ! -e "${GITHUB_RUN_DIR}" ]; then
+            log "ERROR: Cannot create experiment directory: ${RUN_DIR}"
+            return 1
+        fi
+        RUN_NAME="${base_run_name}-${suffix}"
+        suffix=$((suffix + 1))
+    done
 
     export LABEL
     export TIMESTAMP
     export RUN_NAME
     export RUN_DIR
     export GITHUB_RUN_DIR
-
-    mkdir -p "${RUN_DIR}"
 
     log "Experiment directory: ${RUN_DIR}"
 }
@@ -220,6 +281,9 @@ Runtime        : ${FIO_RUNTIME}
 [iperf3]
 Server         : ${IPERF_SERVER_IP}
 Duration       : ${IPERF_DURATION}
+Interval       : ${IPERF_INTERVAL_SECONDS}
+Retries        : ${IPERF_RETRIES}
+Retry interval : ${IPERF_RETRY_INTERVAL_SECONDS}
 EOF
 }
 

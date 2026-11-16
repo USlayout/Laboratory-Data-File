@@ -1,20 +1,11 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
-
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 RUN_DIR RUN_NUMBER"
-    exit 1
-fi
-
-RUN_DIR="$1"
-RUN_NUMBER="$2"
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/common.sh"
-
+parse_benchmark_args "$@"
+start_benchmark fio fio
+for ((RUN_NUMBER=1; RUN_NUMBER<=BENCHMARK_RUNS; RUN_NUMBER++)); do
 OUT_DIR="${RUN_DIR}/fio/run$(printf '%02d' "${RUN_NUMBER}")"
 
 mkdir -p "${OUT_DIR}"
@@ -109,3 +100,5 @@ find "${OUT_DIR}" \
 
 
 echo "fio run ${RUN_NUMBER} complete"
+done
+finish_benchmark
