@@ -6,6 +6,7 @@
 <style>
 :root{color-scheme:dark;--bg:#0d1218;--panel:#141d27;--line:#293544;--text:#e4edf6;--muted:#94a8bc;--p:#69dfb0;--e:#7cb9ff;--sys:#e9ba68;--wait:#cb8bdf}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px system-ui,sans-serif}main{max-width:1240px;margin:auto;padding:32px 24px}header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:24px}h1{font-size:24px;margin:0 0 6px;letter-spacing:-.7px}h1 span{color:var(--p)}p{margin:0;color:var(--muted);line-height:1.6}.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}button,select{background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);padding:8px;font:inherit}button{cursor:pointer}.status{font-size:12px;color:var(--p)}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.card,section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}.eyebrow{font-size:11px;letter-spacing:1.6px;color:var(--muted)}.big{font:32px ui-monospace,monospace;margin:10px 0}.sub{font-size:12px;color:var(--muted)}section{margin-bottom:14px}h2{margin:0;font-size:15px}h2 small{font-size:12px;font-weight:400;color:var(--muted);margin-left:12px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.badge{color:var(--p);font:12px ui-monospace,monospace}.ecores .badge{color:var(--e)}.cores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 32px}.core{display:flex;align-items:center;gap:10px;font:12px ui-monospace,monospace}.cpu-label{width:56px;flex-shrink:0;color:var(--muted)}.track{height:15px;background:#090e14;border-radius:3px;overflow:hidden;display:flex;flex:1}.bar{height:100%;background:var(--p)}.ecores .user{background:var(--e)}.bar.system{background:var(--sys)}.bar.wait{background:var(--wait)}.pct{width:54px;text-align:right;font-variant-numeric:tabular-nums}.legend{display:flex;gap:20px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin:12px 0 20px}.legend i{display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:2px}.lower{display:grid;grid-template-columns:1fr 1fr;gap:14px}.sensor{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px}.sensor:last-child{border-bottom:0}.sensor span{color:var(--muted)}.sensor strong{white-space:nowrap;font:14px ui-monospace,monospace}.note{font-size:12px;margin-top:12px}.memtrack{height:5px;background:#090e14;border-radius:2px;margin:12px 0}.memtrack div{height:100%;background:var(--e);width:0}footer{font-size:11px;color:var(--muted);margin-top:20px;line-height:1.8}[hidden]{display:none!important}@media(min-width:1000px){.cores{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:650px){main{padding:20px 14px}header{align-items:flex-start;flex-direction:column}.summary,.lower{grid-template-columns:1fr}.cores{grid-template-columns:1fr}.big{font-size:28px}.card,section{padding:16px}}
+input{background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--text);padding:8px;font:inherit;min-width:0}input[type=search]{width:220px}.process-head{gap:16px;flex-wrap:wrap}.process-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.table-scroll{overflow:auto;max-height:480px;margin-top:16px}table{width:100%;border-collapse:collapse;font:12px ui-monospace,monospace;white-space:nowrap}th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}th{position:sticky;top:0;background:#1d2c39;color:var(--muted);font-size:11px;z-index:1}td:nth-child(2),td:last-child,th:nth-child(2),th:last-child{text-align:left}td:last-child{max-width:270px;overflow:hidden;text-overflow:ellipsis}tbody tr:hover{background:#1b2b38}.hot{color:var(--p)}.pager{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:14px}.pager button:disabled{opacity:.35;cursor:default}.sensor span{overflow-wrap:anywhere}.process-tools label{display:flex;gap:6px;align-items:center}.process-note{margin-bottom:4px}@media(max-width:650px){input[type=search]{width:100%}.process-tools{width:100%}.process-tools label{flex-wrap:wrap}}
 </style>
 <main>
 <header><div><h1><span>▥</span> Core / resource monitor</h1><p id="machine">Ubuntu · 接続中…</p></div><div class="controls"><span class="status" id="status" role="status">接続中</span><label class="sub">更新 <select id="interval" aria-label="更新間隔"><option value="2">2秒</option><option value="5">5秒</option><option value="10">10秒</option></select></label><button id="pause">一時停止</button></div></header>
@@ -14,7 +15,19 @@
 <section id="E" class="ecores"><div class="section-head"><h2>Eコア <small>Efficiency</small></h2><span class="badge"></span></div><div class="cores"></div></section>
 <section id="U" hidden><div class="section-head"><h2>未判別のCPU <small>Unknown / non-hybrid</small></h2><span class="badge"></span></div><div class="cores"></div><p class="note">P/E分類情報がありません。必要なら --p-cores / --e-cores で指定してください。</p></section>
 <div class="legend"><span><i style="background:var(--p)"></i>P: user / nice</span><span><i style="background:var(--e)"></i>E: user / nice</span><span><i style="background:var(--sys)"></i>system / IRQ / steal</span><span><i style="background:var(--wait)"></i>I/O wait（使用率から除外）</span></div>
-<div class="lower"><section><h2>温度 <small>Hardware sensors</small></h2><div id="temperatures"></div></section><section><h2>消費電力 <small>RAPL / hwmon</small></h2><div id="power"></div><p class="note">CPUパッケージ・各ドメインなどの計測値です。項目は重複するため合算しません。PC全体の壁コンセント電力とは異なります。</p></section></div>
+<section id="process-panel">
+ <div class="section-head process-head"><h2>プロセス <small id="process-summary">計測待ち</small></h2><span class="badge">PROCESS VIEW</span></div>
+ <div class="process-tools">
+  <input id="process-search" type="search" placeholder="PID・ユーザー・名前で検索" aria-label="プロセス検索">
+  <label class="sub">並び順 <select id="process-sort"><option value="cpu">CPU% ↓</option><option value="memory">MEM% ↓</option><option value="pid">PID ↑</option><option value="seconds">TIME ↓</option><option value="name">名前 ↑</option></select></label>
+  <label class="sub">表示 <select id="process-size"><option value="25">25行</option><option value="50" selected>50行</option><option value="100">100行</option></select></label>
+  <label class="sub"><input id="process-running" type="checkbox">実行中のみ</label>
+ </div>
+ <p class="note process-note">CPU 100% = 論理CPU 1個分（マルチスレッドでは100%超）。RES = 常駐メモリ。名前はプロセス名です。</p>
+ <div class="table-scroll"><table aria-label="プロセス一覧"><thead><tr><th>PID</th><th>USER</th><th>PRI</th><th>NI</th><th>VIRT</th><th>RES</th><th>THR</th><th>S</th><th>CPU%</th><th>MEM%</th><th>TIME</th><th>NAME</th></tr></thead><tbody id="process-body"></tbody></table></div>
+ <div class="pager"><span class="sub" id="process-page" role="status">計測待ち</span><div><button id="process-prev" aria-label="プロセスの前ページ">← 前</button> <button id="process-next" aria-label="プロセスの次ページ">次 →</button></div></div>
+</section>
+<div class="lower"><section><h2>温度 <small>Hardware sensors</small></h2><p class="note">Package → P → Eの順。Coreは物理コアIDで欠番があります。対応が分かる場合は論理CPU番号も表示します。</p><div id="temperatures"></div></section><section><h2>消費電力 <small>RAPL / hwmon</small></h2><div id="power"></div><p class="note">CPUパッケージ・各ドメインなどの計測値です。項目は重複するため合算しません。PC全体の壁コンセント電力とは異なります。</p></section></div>
 <footer id="info">標準ライブラリのみ · 外部通信なし · 履歴保存なし · 非表示タブでは取得停止</footer>
 </main>
 <script>
@@ -23,6 +36,27 @@ const $=id=>document.getElementById(id);
 const gib=n=>(n/1073741824).toFixed(2);
 const pct=n=>n==null?'—':n.toFixed(1);
 let timer, paused=false, busy=false, rows=new Map(), signature='', minimum=0;
+let processData={enabled:true,items:[],total:0,running:0,unreadable:0},processPage=0,processRows=[];
+const compactBytes=n=>n>=1073741824?(n/1073741824).toFixed(2)+'G':n>=1048576?(n/1048576).toFixed(1)+'M':Math.round(n/1024)+'K';
+function duration(seconds){const minutes=Math.floor(seconds/60);return minutes+':'+(seconds%60).toFixed(1).padStart(4,'0')}
+function renderProcesses(){
+ const enabled=processData.enabled;
+ text('process-summary',enabled?`${processData.total} processes · ${processData.running} running`:'取得OFF (--no-processes)');
+ const query=$('process-search').value.trim().toLowerCase(),sort=$('process-sort').value,size=Number($('process-size').value),running=$('process-running').checked;
+ const list=processData.items.filter(p=>(!running||p.state==='R')&&(!query||`${p.pid} ${p.user} ${p.name}`.toLowerCase().includes(query)));
+ list.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name)||a.pid-b.pid:sort==='pid'?a.pid-b.pid:(b[sort]??-1)-(a[sort]??-1)||a.pid-b.pid);
+ const pages=Math.max(1,Math.ceil(list.length/size));processPage=Math.max(0,Math.min(processPage,pages-1));
+ const visible=list.slice(processPage*size,(processPage+1)*size),body=$('process-body');
+ while(processRows.length>visible.length){processRows.pop().remove()}
+ while(processRows.length<visible.length){const row=document.createElement('tr');for(let i=0;i<12;i++)row.append(document.createElement('td'));body.append(row);processRows.push(row)}
+ visible.forEach((p,index)=>{
+  const row=processRows[index],values=[p.pid,p.user,p.priority,p.nice,compactBytes(p.virtual),compactBytes(p.rss),p.threads,p.state,pct(p.cpu),p.memory.toFixed(1),duration(p.seconds),p.name];
+  values.forEach((value,i)=>row.children[i].textContent=value);row.children[8].className=(p.cpu||0)>=50?'hot':'';row.children[11].title=p.name;
+ });
+ const start=list.length?processPage*size+1:0,end=Math.min((processPage+1)*size,list.length);
+ text('process-page',enabled?`${start}–${end} / ${list.length}件 · ${processPage+1}/${pages}ページ`+(processData.unreadable?` · 終了/取得不可 ${processData.unreadable}件`:''):'プロセス収集は無効です');
+ $('process-prev').disabled=processPage===0;$('process-next').disabled=processPage>=pages-1;
+}
 function text(id,value){$(id).textContent=value}
 function coreRows(cores){
  const next=JSON.stringify(cores.map(c=>[c.id,c.group,c.package,c.core]));
@@ -62,6 +96,7 @@ async function update(){
   const m=d.memory;text('memory',gib(m.used)+' GiB');text('memory-detail',gib(m.used)+' / '+gib(m.total)+' GiB · 利用可能 '+gib(m.available)+' GiB');$('memfill').style.width=(m.total?100*m.used/m.total:0)+'%';
   text('swap',gib(m.swap_used)+' GiB');text('swap-detail',m.swap_total?gib(m.swap_total)+' GiB 中':'Swapなし');
   coreRows(d.cores);sensors('temperatures',d.temperatures,'celsius','°C','取得可能な温度センサーがありません。');sensors('power',d.power,'watts','W','取得可能な電力センサーがありません。RAPL対応・読み取り権限を確認してください。');
+  processData=d.processes;renderProcesses();
   text('status','● '+new Date(d.timestamp*1000).toLocaleTimeString()+' 更新');$('status').style.color='var(--p)';
   text('info',`標準ライブラリのみ · 履歴保存なし · 分類: ${d.classification} · 最小計測間隔 ${d.interval}秒 · 非表示タブでは取得停止`);
  }catch(error){text('status','接続エラー · 再接続待ち');$('status').style.color='var(--sys)'}
@@ -70,6 +105,10 @@ async function update(){
 $('interval').addEventListener('change',schedule);
 $('pause').addEventListener('click',()=>{paused=!paused;$('pause').textContent=paused?'再開':'一時停止';clearTimeout(timer);if(paused)text('status','一時停止');else update()});
 document.addEventListener('visibilitychange',()=>{clearTimeout(timer);if(!document.hidden)update()});
+$('process-search').addEventListener('input',()=>{processPage=0;renderProcesses()});
+for(const id of ['process-sort','process-size','process-running'])$(id).addEventListener('change',()=>{processPage=0;renderProcesses()});
+$('process-prev').addEventListener('click',()=>{processPage--;renderProcesses()});
+$('process-next').addEventListener('click',()=>{processPage++;renderProcesses()});
 update();
 </script>
 </html>

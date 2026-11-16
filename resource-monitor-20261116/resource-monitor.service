@@ -4,7 +4,7 @@ Description=Lightweight Ubuntu web resource monitor
 [Service]
 Type=simple
 # Replace this path with the actual absolute path on Ubuntu.
-ExecStart=/usr/bin/python3 /absolute/path/resource-monitor-20261116/monitor.py --interval 2
+ExecStart=/usr/bin/python3 /absolute/path/resource-monitor-20261116/monitor.py --host 0.0.0.0 --port 8765 --interval 2
 Restart=on-failure
 RestartSec=5
 NoNewPrivileges=true

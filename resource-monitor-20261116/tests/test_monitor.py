@@ -88,6 +88,70 @@ class MonitorTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 m.cpulist(value)
 
+    def put_process(self, pid=123, ticks=100, start=1000, name="worker (a) )", rss=10):
+        fields = ["0"] * 40
+        fields[0], fields[11], fields[12] = "R", str(ticks), "0"
+        fields[15:18] = ["20", "0", "4"]
+        fields[19:22] = [str(start), "10485760", str(rss)]
+        self.write(f"proc/{pid}/stat", f"{pid} ({name}) " + " ".join(fields))
+
+    def test_process_cpu_rss_and_pid_reuse(self):
+        self.put_process()
+        with patch.object(m.time, "monotonic", return_value=100):
+            monitor = self.monitor()
+        self.put_process(ticks=100 + monitor.clock_ticks * 3)
+        with patch.object(m.time, "monotonic", return_value=102):
+            item = monitor.sample()["processes"]["items"][0]
+        self.assertEqual(item["name"], "worker (a) )")
+        self.assertEqual(item["cpu"], 150)
+        self.assertEqual(item["rss"], 10 * monitor.page_size)
+        self.assertEqual(item["threads"], 4)
+        self.assertAlmostEqual(item["memory"], round(item["rss"] / (1000 * 1024) * 100, 2))
+        self.put_process(ticks=1, start=2000)
+        with patch.object(m.time, "monotonic", return_value=104):
+            self.assertIsNone(monitor.sample()["processes"]["items"][0]["cpu"])
+        (self.proc / "123/stat").unlink()
+        with patch.object(m.time, "monotonic", return_value=106):
+            data = monitor.sample()["processes"]
+        self.assertEqual(data["items"], [])
+        self.assertEqual(data["unreadable"], 1)
+        self.assertEqual(monitor.process_previous, {})
+
+    def test_process_collection_disabled(self):
+        self.put_process()
+        data = self.monitor(processes=False).sample()["processes"]
+        self.assertFalse(data["enabled"])
+        self.assertEqual(data["items"], [])
+
+    def test_temperature_numeric_order_and_logical_mapping(self):
+        # Lexical temp14-before-temp6 order must not dictate the displayed order.
+        for sensor, core in (("temp14", 12), ("temp6", 4)):
+            self.write(f"sys/class/hwmon/hwmon0/{sensor}_input", "42000")
+            self.write(f"sys/class/hwmon/hwmon0/{sensor}_label", f"Core {core}")
+        for cpu, core in ((0, 4), (1, 12)):
+            self.write(f"sys/devices/system/cpu/cpu{cpu}/topology/core_id", str(core))
+            self.write(f"sys/devices/system/cpu/cpu{cpu}/topology/physical_package_id", "0")
+        data = self.monitor().sample()["temperatures"]
+        self.assertIn("Package id 0", data[0]["label"])
+        self.assertIn("Core 4", data[1]["label"])
+        self.assertEqual(data[1]["cpus"], [0])
+        self.assertEqual(data[1]["group"], "P")
+        self.assertIn("Core 12", data[2]["label"])
+        self.assertEqual(data[2]["group"], "E")
+        # Same physical ID in another package must not be falsely mapped.
+        self.write("sys/devices/system/cpu/cpu1/topology/physical_package_id", "1")
+        data = self.monitor().sample()["temperatures"]
+        unmatched = next(t for t in data if "Core 12" in t["label"])
+        self.assertEqual(unmatched["cpus"], [])
+
+    def test_temperature_same_group_numeric_order(self):
+        for sensor, core in (("temp14", 12), ("temp6", 4)):
+            self.write(f"sys/class/hwmon/hwmon0/{sensor}_input", "42000")
+            self.write(f"sys/class/hwmon/hwmon0/{sensor}_label", f"Core {core}")
+        data = self.monitor().sample()["temperatures"]
+        self.assertIn("Core 4", data[1]["label"])
+        self.assertIn("Core 12", data[2]["label"])
+
     @unittest.skipUnless(shutil.which("node"), "Optional JS syntax check requires Node.js on development host")
     def test_frontend_syntax(self):
         page = (Path(__file__).parents[1] / "index.html").read_text(encoding="utf-8")

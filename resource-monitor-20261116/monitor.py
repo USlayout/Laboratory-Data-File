@@ -3,12 +3,36 @@
 import argparse
 import json
 import math
+import os
 import re
 import socket
 import sys
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+
+try:
+    import pwd
+except ImportError:  # Allows fixture tests on Windows.
+    pwd = None
+
+
+def natural_key(value):
+    return [int(part) if part.isdigit() else part.lower()
+            for part in re.split(r"(\d+)", str(value))]
+
+
+def process_stat(value):
+    """comm may contain spaces and ')' so splitting the whole line is unsafe."""
+    start, end = value.find("("), value.rfind(")")
+    if start < 0 or end <= start:
+        raise ValueError("Invalid process stat")
+    fields = value[end + 1:].split()
+    return {"name": value[start + 1:end][:160], "state": fields[0],
+            "ticks": int(fields[11]) + int(fields[12]),
+            "priority": int(fields[15]), "nice": int(fields[16]),
+            "threads": int(fields[17]), "start": int(fields[19]),
+            "virtual": int(fields[20]), "rss_pages": int(fields[21])}
 
 
 def read(path, default=""):
@@ -68,7 +92,7 @@ def utilization(before, after):
 
 class Monitor:
     def __init__(self, proc=Path("/proc"), sysfs=Path("/sys"), interval=2,
-                 pcores=None, ecores=None):
+                 pcores=None, ecores=None, processes=True):
         self.proc, self.sysfs, self.interval = proc, sysfs, interval
         self.manual = pcores is not None or ecores is not None
         self.pcores, self.ecores = pcores or set(), ecores or set()
@@ -79,12 +103,20 @@ class Monitor:
         self.discovered = float("-inf")
         self.sensors = []
         self.rapl = []
+        self.processes_enabled = processes
+        self.process_previous = {}
+        self.process_time = None
+        self.users = {}
+        self.clock_ticks = os.sysconf("SC_CLK_TCK") if hasattr(os, "sysconf") else 100
+        self.page_size = os.sysconf("SC_PAGE_SIZE") if hasattr(os, "sysconf") else 4096
         self.model = next((line.split(":", 1)[1].strip()
                            for line in read(proc / "cpuinfo").splitlines()
                            if line.startswith("model name")), "Linux CPU")
         self.hostname = socket.gethostname()
         self.discover(self.sampled)
         self.power(self.sampled)  # Prime energy counters without a sleeping thread.
+        if processes:
+            self.processes(self.sampled, 0)
 
     def discover(self, now):
         if now - self.discovered < 30:
@@ -95,12 +127,12 @@ class Monitor:
             self.pcores = cpulist(read(pmu / "cpu_core/cpus"))
             self.ecores = cpulist(read(pmu / "cpu_atom/cpus"))
         self.sensors = []
-        for hw in sorted((self.sysfs / "class/hwmon").glob("hwmon*")):
+        for hw in sorted((self.sysfs / "class/hwmon").glob("hwmon*"), key=natural_key):
             name = read(hw / "name", hw.name)
             for kind, pattern in (("temperature", "temp*_input"),
                                   ("power", "power*_input"),
                                   ("power", "power*_average")):
-                for path in sorted(hw.glob(pattern)):
+                for path in sorted(hw.glob(pattern), key=natural_key):
                     stem = path.name.rsplit("_", 1)[0]
                     if path.name.endswith("_average") and (hw / (stem + "_input")).exists():
                         continue
@@ -118,6 +150,81 @@ class Monitor:
                 paths.add(path.resolve())
         self.rapl = sorted(paths)
         self.energy = {key: value for key, value in self.energy.items() if key in paths}
+
+    def temperatures(self, cores):
+        result = []
+        for kind, label, path in self.sensors:
+            if kind != "temperature":
+                continue
+            value = number(path)
+            item = {"label": label, "celsius": round(value / 1000, 1) if value is not None else None}
+            order = (1, natural_key(label))
+            if label.startswith("coretemp · "):
+                package_label = read(path.parent / "temp1_label")
+                package = re.fullmatch(r"Package id (\d+)", package_label)
+                core = re.fullmatch(r"coretemp · Core (\d+)", label)
+                if package:
+                    package_id = package[1]
+                    matches = [c for c in cores if c["package"] == package_id
+                               and core and c["core"] == core[1]]
+                    ids = sorted(c["id"] for c in matches)
+                    groups = {c["group"] for c in matches}
+                    group = next(iter(groups)) if len(groups) == 1 else "U"
+                    if core:
+                        if ids:
+                            item["label"] = (f"{group if group != 'U' else '未判別'} · CPU "
+                                             + ",".join(map(str, ids))
+                                             + f" · Core {core[1]} / package {package_id}")
+                        order = (0, int(package_id), 1, {"P": 0, "E": 1, "U": 2}[group], int(core[1]))
+                    else:
+                        order = (0, int(package_id), 0, 0, 0)
+                    item.update({"package": int(package_id), "cpus": ids, "group": group})
+            item["_order"] = order
+            result.append(item)
+        result.sort(key=lambda item: item["_order"])
+        for item in result:
+            del item["_order"]
+        return result
+
+    def processes(self, now, memory_total):
+        if not self.processes_enabled:
+            return {"enabled": False, "items": [], "total": 0, "running": 0, "unreadable": 0}
+        previous, current, items, users = self.process_previous, {}, [], {}
+        elapsed = now - self.process_time if self.process_time is not None else 0
+        unreadable = 0
+        with os.scandir(self.proc) as entries:
+            for entry in entries:
+                if not entry.name.isdigit():
+                    continue
+                try:
+                    stat = process_stat(read(Path(entry.path) / "stat"))
+                    uid = entry.stat(follow_symlinks=False).st_uid
+                    if uid not in users:
+                        username = self.users.get(uid)
+                        if username is None:
+                            try:
+                                username = pwd.getpwuid(uid).pw_name if pwd else str(uid)
+                            except KeyError:
+                                username = str(uid)
+                        users[uid] = username
+                    pid = int(entry.name)
+                    old = previous.get(pid)
+                    cpu = None
+                    if old and old[0] == stat["start"] and elapsed > 0:
+                        cpu = round(max(0, stat["ticks"] - old[1]) / self.clock_ticks / elapsed * 100, 1)
+                    current[pid] = (stat["start"], stat["ticks"])
+                    rss = max(0, stat["rss_pages"]) * self.page_size
+                    items.append({"pid": pid, "user": users[uid], "state": stat["state"],
+                                  "cpu": cpu, "memory": round(rss / memory_total * 100, 2) if memory_total else 0,
+                                  "rss": rss, "virtual": stat["virtual"], "priority": stat["priority"],
+                                  "nice": stat["nice"], "threads": stat["threads"],
+                                  "seconds": round(stat["ticks"] / self.clock_ticks, 2), "name": stat["name"]})
+                except (OSError, ValueError, IndexError):
+                    # Processes may exit or become unreadable during collection.
+                    unreadable += 1
+        self.process_previous, self.process_time, self.users = current, now, users
+        return {"enabled": True, "items": items, "total": len(items),
+                "running": sum(p["state"] == "R" for p in items), "unreadable": unreadable}
 
     def power(self, now):
         result = []
@@ -173,11 +280,6 @@ class Monitor:
             mem[key] = int(value.split()[0]) * 1024
         total = mem.get("MemTotal", 0)
         available = mem.get("MemAvailable", mem.get("MemFree", 0))
-        temps = []
-        for kind, label, path in self.sensors:
-            if kind == "temperature":
-                value = number(path)
-                temps.append({"label": label, "celsius": round(value / 1000, 1) if value is not None else None})
         self.cached = {"hostname": self.hostname, "model": self.model, "timestamp": time.time(),
                        "interval": self.interval, "classification": "manual" if self.manual else "Intel hybrid PMU",
                        "cpu": utilization(self.previous.get("cpu"), times["cpu"]),
@@ -185,7 +287,8 @@ class Monitor:
                        "memory": {"total": total, "used": max(0, total - available),
                                   "available": available, "swap_total": mem.get("SwapTotal", 0),
                                   "swap_used": max(0, mem.get("SwapTotal", 0) - mem.get("SwapFree", 0))},
-                       "temperatures": temps, "power": self.power(now)}
+                       "temperatures": self.temperatures(cores), "power": self.power(now),
+                       "processes": self.processes(now, total)}
         self.previous, self.sampled = times, now
         return self.cached
 
@@ -235,11 +338,12 @@ def make_handler(monitor):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--host", default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--interval", type=float, default=2, help="Sampling interval in seconds (>= 0.5)")
     parser.add_argument("--p-cores", help="Logical CPU IDs, e.g. 0-7")
     parser.add_argument("--e-cores", help="Logical CPU IDs, e.g. 8-19")
+    parser.add_argument("--no-processes", action="store_true", help="Disable process collection to reduce overhead")
     args = parser.parse_args()
     if not sys.platform.startswith("linux"):
         parser.error("Run this program on Ubuntu/Linux (/proc and /sys required)")
@@ -252,7 +356,7 @@ def main():
             raise ValueError("P/E CPU lists must not overlap")
     except ValueError as error:
         parser.error(str(error))
-    monitor = Monitor(interval=args.interval, pcores=p, ecores=e)
+    monitor = Monitor(interval=args.interval, pcores=p, ecores=e, processes=not args.no_processes)
     server = HTTPServer((args.host, args.port), make_handler(monitor))
     print(f"Monitor: http://{args.host}:{args.port} (interval: {args.interval}s)", flush=True)
     try:
