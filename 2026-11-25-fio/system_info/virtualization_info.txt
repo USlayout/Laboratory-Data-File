@@ -1,0 +1,11 @@
+===== systemd-detect-virt =====
+/benchmark/common.sh: line 216: systemd-detect-virt: command not found
+
+===== hypervisor flag =====
+hypervisor
+
+===== docker ps -a =====
+docker is not installed
+
+===== virsh list --all =====
+virsh is not installed

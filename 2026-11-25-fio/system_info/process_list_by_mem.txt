@@ -1,0 +1,4 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.1   4776  4280 pts/0    Ss   15:30   0:00 /bin/bash
+root         372  0.0  0.1   6764  4176 pts/0    R+   15:55   0:00 ps aux --sort=-%mem
+root         349  0.0  0.0   4644  3800 pts/0    S+   15:55   0:00 bash ./fio_benchmark.sh --runs 10
