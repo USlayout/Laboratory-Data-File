@@ -1,1 +1,0 @@
-/benchmark/common.sh: line 208: systemctl: command not found
