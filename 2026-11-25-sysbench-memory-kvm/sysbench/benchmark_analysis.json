@@ -1,0 +1,142 @@
+{
+  "schema": "benchmark-analysis-v1",
+  "environment": "Kvm",
+  "source": "C:\\Users\\soeno\\GitHub\\Laboratory-Data-File\\2026-11-25-sysbench-memory-kvm\\sysbench",
+  "created": "2026-11-25T16:26:34+09:00",
+  "policy": {
+    "stddev": "sample (ddof=1)",
+    "outliers": "Tukey 1.5 IQR; inclusive quartiles; n>=4",
+    "warning_percent": 20.0,
+    "excluded_automatically": false
+  },
+  "metadata": {},
+  "warnings": [],
+  "metrics": [
+    {
+      "key": "sysbench.memory.read",
+      "unit": "MiB/s",
+      "samples": [
+        {
+          "value": 42817.05,
+          "source": "run01/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 42152.97,
+          "source": "run02/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 42940.45,
+          "source": "run03/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 40224.7,
+          "source": "run04/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 42242.36,
+          "source": "run05/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 42708.16,
+          "source": "run06/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 39098.62,
+          "source": "run07/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 40655.67,
+          "source": "run08/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 39921.32,
+          "source": "run09/memory/sysbench_memory_read.txt"
+        },
+        {
+          "value": 39324.46,
+          "source": "run10/memory/sysbench_memory_read.txt"
+        }
+      ],
+      "n": 10,
+      "mean": 41208.576,
+      "median": 41404.32,
+      "stddev": 1517.6176571865676,
+      "minimum": 39098.62,
+      "maximum": 42940.45,
+      "q1": 39997.16499999999,
+      "q3": 42591.71000000001,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 41208.576,
+        "median": 41404.32,
+        "stddev": 1517.6176571865676
+      }
+    },
+    {
+      "key": "sysbench.memory.write",
+      "unit": "MiB/s",
+      "samples": [
+        {
+          "value": 9736.02,
+          "source": "run01/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 9281.02,
+          "source": "run02/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 8804.1,
+          "source": "run03/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 9024.12,
+          "source": "run04/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 9147.57,
+          "source": "run05/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 8696.02,
+          "source": "run06/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 9518.04,
+          "source": "run07/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 9718.08,
+          "source": "run08/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 8920.68,
+          "source": "run09/memory/sysbench_memory_write.txt"
+        },
+        {
+          "value": 9746.47,
+          "source": "run10/memory/sysbench_memory_write.txt"
+        }
+      ],
+      "n": 10,
+      "mean": 9259.212,
+      "median": 9214.295,
+      "stddev": 401.30922579311147,
+      "minimum": 8696.02,
+      "maximum": 9746.47,
+      "q1": 8946.54,
+      "q3": 9668.07,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 9259.212,
+        "median": 9214.295,
+        "stddev": 401.30922579311147
+      }
+    }
+  ]
+}

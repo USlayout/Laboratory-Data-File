@@ -1,0 +1,79 @@
+{
+  "schema": "benchmark-analysis-v1",
+  "environment": "Host",
+  "source": "C:\\Users\\soeno\\GitHub\\Laboratory-Data-File\\2026-11-25-sysbench-cpu-host\\sysbench",
+  "created": "2026-11-25T16:23:05+09:00",
+  "policy": {
+    "stddev": "sample (ddof=1)",
+    "outliers": "Tukey 1.5 IQR; inclusive quartiles; n>=4",
+    "warning_percent": 20.0,
+    "excluded_automatically": false
+  },
+  "metadata": {},
+  "warnings": [],
+  "metrics": [
+    {
+      "key": "sysbench.cpu.events",
+      "unit": "events/s",
+      "samples": [
+        {
+          "value": 6059.9,
+          "source": "run01/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6059.93,
+          "source": "run02/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6057.24,
+          "source": "run03/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6059.27,
+          "source": "run04/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6057.16,
+          "source": "run05/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6058.14,
+          "source": "run06/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6060.44,
+          "source": "run07/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6056.85,
+          "source": "run08/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6059.64,
+          "source": "run09/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6061.03,
+          "source": "run10/cpu/sysbench_cpu_result.txt"
+        }
+      ],
+      "n": 10,
+      "mean": 6058.96,
+      "median": 6059.455,
+      "stddev": 1.4974496838142124,
+      "minimum": 6056.85,
+      "maximum": 6061.03,
+      "q1": 6057.465,
+      "q3": 6059.922500000001,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 6058.96,
+        "median": 6059.455,
+        "stddev": 1.4974496838142124
+      }
+    }
+  ]
+}

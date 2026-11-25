@@ -1,0 +1,3 @@
+﻿key,unit,n,mean,median,stddev,minimum,maximum,outlier_percent,warnings
+sysbench.memory.read,MiB/s,10,32613.961,32720.565000000002,263.2401227628913,31899.77,32777.49,20.0,外れ値 2/10件 (20.0%); 外れ値が多いため測定条件を確認してください
+sysbench.memory.write,MiB/s,10,8171.599,8164.105,310.5796268788766,7767.57,8850.0,0.0,

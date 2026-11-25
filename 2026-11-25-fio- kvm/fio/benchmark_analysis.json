@@ -1,0 +1,817 @@
+{
+  "schema": "benchmark-analysis-v1",
+  "environment": "Kvm",
+  "source": "C:\\Users\\soeno\\GitHub\\Laboratory-Data-File\\2026-11-25-fio- kvm\\fio",
+  "created": "2026-11-25T16:25:03+09:00",
+  "policy": {
+    "stddev": "sample (ddof=1)",
+    "outliers": "Tukey 1.5 IQR; inclusive quartiles; n>=4",
+    "warning_percent": 20.0,
+    "excluded_automatically": false
+  },
+  "metadata": {},
+  "warnings": [],
+  "metrics": [
+    {
+      "key": "fio.rand_read.iops",
+      "unit": "IOPS",
+      "samples": [
+        {
+          "value": 426879.40402,
+          "source": "run01/fio_rand_read.json"
+        },
+        {
+          "value": 423843.905203,
+          "source": "run02/fio_rand_read.json"
+        },
+        {
+          "value": 422662.022532,
+          "source": "run03/fio_rand_read.json"
+        },
+        {
+          "value": 424255.358155,
+          "source": "run04/fio_rand_read.json"
+        },
+        {
+          "value": 423377.454085,
+          "source": "run05/fio_rand_read.json"
+        },
+        {
+          "value": 422897.036765,
+          "source": "run06/fio_rand_read.json"
+        },
+        {
+          "value": 414918.269391,
+          "source": "run07/fio_rand_read.json"
+        },
+        {
+          "value": 428510.365976,
+          "source": "run08/fio_rand_read.json"
+        },
+        {
+          "value": 423959.234692,
+          "source": "run09/fio_rand_read.json"
+        },
+        {
+          "value": 422124.362521,
+          "source": "run10/fio_rand_read.json"
+        }
+      ],
+      "n": 10,
+      "mean": 423342.741334,
+      "median": 423610.679644,
+      "stddev": 3555.8377074707764,
+      "minimum": 414918.269391,
+      "maximum": 428510.365976,
+      "q1": 422720.77609025,
+      "q3": 424181.32728925004,
+      "outlier_indices": [
+        0,
+        6,
+        7
+      ],
+      "outlier_percent": 30.0,
+      "warnings": [
+        "外れ値 3/10件 (30.0%)",
+        "外れ値が多いため測定条件を確認してください"
+      ],
+      "filtered": {
+        "n": 7,
+        "mean": 423302.76770757145,
+        "median": 423377.454085,
+        "stddev": 774.660793253578
+      }
+    },
+    {
+      "key": "fio.rand_read.latency",
+      "unit": "µs",
+      "samples": [
+        {
+          "value": 299.609940251,
+          "source": "run01/fio_rand_read.json"
+        },
+        {
+          "value": 301.75680388999996,
+          "source": "run02/fio_rand_read.json"
+        },
+        {
+          "value": 302.590964096,
+          "source": "run03/fio_rand_read.json"
+        },
+        {
+          "value": 301.461023169,
+          "source": "run04/fio_rand_read.json"
+        },
+        {
+          "value": 302.08720593,
+          "source": "run05/fio_rand_read.json"
+        },
+        {
+          "value": 302.429518587,
+          "source": "run06/fio_rand_read.json"
+        },
+        {
+          "value": 308.23867760499996,
+          "source": "run07/fio_rand_read.json"
+        },
+        {
+          "value": 298.45688672800003,
+          "source": "run08/fio_rand_read.json"
+        },
+        {
+          "value": 301.66941972200004,
+          "source": "run09/fio_rand_read.json"
+        },
+        {
+          "value": 302.985171883,
+          "source": "run10/fio_rand_read.json"
+        }
+      ],
+      "n": 10,
+      "mean": 302.1285611861,
+      "median": 301.92200490999994,
+      "stddev": 2.560222922597062,
+      "minimum": 298.45688672800003,
+      "maximum": 308.23867760499996,
+      "q1": 301.51312230725,
+      "q3": 302.55060271875,
+      "outlier_indices": [
+        0,
+        6,
+        7
+      ],
+      "outlier_percent": 30.0,
+      "warnings": [
+        "外れ値 3/10件 (30.0%)",
+        "外れ値が多いため測定条件を確認してください"
+      ],
+      "filtered": {
+        "n": 7,
+        "mean": 302.14001532528573,
+        "median": 302.08720593,
+        "stddev": 0.5528090306023407
+      }
+    },
+    {
+      "key": "fio.rand_read.throughput",
+      "unit": "MiB/s",
+      "samples": [
+        {
+          "value": 1667.4976711273193,
+          "source": "run01/fio_rand_read.json"
+        },
+        {
+          "value": 1655.640254020691,
+          "source": "run02/fio_rand_read.json"
+        },
+        {
+          "value": 1651.023525238037,
+          "source": "run03/fio_rand_read.json"
+        },
+        {
+          "value": 1657.2474927902222,
+          "source": "run04/fio_rand_read.json"
+        },
+        {
+          "value": 1653.8181791305542,
+          "source": "run05/fio_rand_read.json"
+        },
+        {
+          "value": 1651.9415493011475,
+          "source": "run06/fio_rand_read.json"
+        },
+        {
+          "value": 1620.774489402771,
+          "source": "run07/fio_rand_read.json"
+        },
+        {
+          "value": 1673.8686170578003,
+          "source": "run08/fio_rand_read.json"
+        },
+        {
+          "value": 1656.090760231018,
+          "source": "run09/fio_rand_read.json"
+        },
+        {
+          "value": 1648.9232902526855,
+          "source": "run10/fio_rand_read.json"
+        }
+      ],
+      "n": 10,
+      "mean": 1653.6825828552246,
+      "median": 1654.7292165756226,
+      "stddev": 13.889991083323203,
+      "minimum": 1620.774489402771,
+      "maximum": 1673.8686170578003,
+      "q1": 1651.2530312538147,
+      "q3": 1656.9583096504211,
+      "outlier_indices": [
+        0,
+        6,
+        7
+      ],
+      "outlier_percent": 30.0,
+      "warnings": [
+        "外れ値 3/10件 (30.0%)",
+        "外れ値が多いため測定条件を確認してください"
+      ],
+      "filtered": {
+        "n": 7,
+        "mean": 1653.5264358520508,
+        "median": 1653.8181791305542,
+        "stddev": 3.026018891168077
+      }
+    },
+    {
+      "key": "fio.rand_write.iops",
+      "unit": "IOPS",
+      "samples": [
+        {
+          "value": 401661.411286,
+          "source": "run01/fio_rand_write.json"
+        },
+        {
+          "value": 188085.730476,
+          "source": "run02/fio_rand_write.json"
+        },
+        {
+          "value": 415400.519983,
+          "source": "run03/fio_rand_write.json"
+        },
+        {
+          "value": 410080.861276,
+          "source": "run04/fio_rand_write.json"
+        },
+        {
+          "value": 413801.806606,
+          "source": "run05/fio_rand_write.json"
+        },
+        {
+          "value": 255892.136929,
+          "source": "run06/fio_rand_write.json"
+        },
+        {
+          "value": 411815.106163,
+          "source": "run07/fio_rand_write.json"
+        },
+        {
+          "value": 309185.014832,
+          "source": "run08/fio_rand_write.json"
+        },
+        {
+          "value": 406908.636379,
+          "source": "run09/fio_rand_write.json"
+        },
+        {
+          "value": 391548.181727,
+          "source": "run10/fio_rand_write.json"
+        }
+      ],
+      "n": 10,
+      "mean": 360437.9405657,
+      "median": 404285.0238325,
+      "stddev": 81008.4625526228,
+      "minimum": 188085.730476,
+      "maximum": 415400.519983,
+      "q1": 329775.80655575,
+      "q3": 411381.54494125,
+      "outlier_indices": [
+        1
+      ],
+      "outlier_percent": 10.0,
+      "warnings": [
+        "外れ値 1/10件 (10.0%)"
+      ],
+      "filtered": {
+        "n": 9,
+        "mean": 379588.18613122223,
+        "median": 406908.636379,
+        "stddev": 57069.549210234385
+      }
+    },
+    {
+      "key": "fio.rand_write.latency",
+      "unit": "µs",
+      "samples": [
+        {
+          "value": 318.430115566,
+          "source": "run01/fio_rand_write.json"
+        },
+        {
+          "value": 680.292136206,
+          "source": "run02/fio_rand_write.json"
+        },
+        {
+          "value": 307.89716678,
+          "source": "run03/fio_rand_write.json"
+        },
+        {
+          "value": 311.884767936,
+          "source": "run04/fio_rand_write.json"
+        },
+        {
+          "value": 309.091178796,
+          "source": "run05/fio_rand_write.json"
+        },
+        {
+          "value": 499.981365047,
+          "source": "run06/fio_rand_write.json"
+        },
+        {
+          "value": 310.568855558,
+          "source": "run07/fio_rand_write.json"
+        },
+        {
+          "value": 413.724483766,
+          "source": "run08/fio_rand_write.json"
+        },
+        {
+          "value": 314.326306096,
+          "source": "run09/fio_rand_write.json"
+        },
+        {
+          "value": 326.653943682,
+          "source": "run10/fio_rand_write.json"
+        }
+      ],
+      "n": 10,
+      "mean": 379.2850319433,
+      "median": 316.378210831,
+      "stddev": 123.08084905785057,
+      "minimum": 307.89716678,
+      "maximum": 680.292136206,
+      "q1": 310.8978336525,
+      "q3": 391.956848745,
+      "outlier_indices": [
+        1
+      ],
+      "outlier_percent": 10.0,
+      "warnings": [
+        "外れ値 1/10件 (10.0%)"
+      ],
+      "filtered": {
+        "n": 9,
+        "mean": 345.83979813633334,
+        "median": 314.326306096,
+        "stddev": 66.77155910918643
+      }
+    },
+    {
+      "key": "fio.rand_write.throughput",
+      "unit": "MiB/s",
+      "samples": [
+        {
+          "value": 1568.9898872375488,
+          "source": "run01/fio_rand_write.json"
+        },
+        {
+          "value": 734.7098846435547,
+          "source": "run02/fio_rand_write.json"
+        },
+        {
+          "value": 1622.6582803726196,
+          "source": "run03/fio_rand_write.json"
+        },
+        {
+          "value": 1601.878363609314,
+          "source": "run04/fio_rand_write.json"
+        },
+        {
+          "value": 1616.413306236267,
+          "source": "run05/fio_rand_write.json"
+        },
+        {
+          "value": 999.5786590576172,
+          "source": "run06/fio_rand_write.json"
+        },
+        {
+          "value": 1608.6527576446533,
+          "source": "run07/fio_rand_write.json"
+        },
+        {
+          "value": 1207.753963470459,
+          "source": "run08/fio_rand_write.json"
+        },
+        {
+          "value": 1589.4868602752686,
+          "source": "run09/fio_rand_write.json"
+        },
+        {
+          "value": 1529.4850845336914,
+          "source": "run10/fio_rand_write.json"
+        }
+      ],
+      "n": 10,
+      "mean": 1407.9607047080995,
+      "median": 1579.2383737564087,
+      "stddev": 316.43930670703196,
+      "minimum": 734.7098846435547,
+      "maximum": 1622.6582803726196,
+      "q1": 1288.186743736267,
+      "q3": 1606.9591591358185,
+      "outlier_indices": [
+        1
+      ],
+      "outlier_percent": 10.0,
+      "warnings": [
+        "外れ値 1/10件 (10.0%)"
+      ],
+      "filtered": {
+        "n": 9,
+        "mean": 1482.7663513819377,
+        "median": 1589.4868602752686,
+        "stddev": 222.92792663124368
+      }
+    },
+    {
+      "key": "fio.seq_read.iops",
+      "unit": "IOPS",
+      "samples": [
+        {
+          "value": 14296.9901,
+          "source": "run01/fio_seq_read.json"
+        },
+        {
+          "value": 3736.30879,
+          "source": "run02/fio_seq_read.json"
+        },
+        {
+          "value": 3774.807506,
+          "source": "run03/fio_seq_read.json"
+        },
+        {
+          "value": 4046.865104,
+          "source": "run04/fio_seq_read.json"
+        },
+        {
+          "value": 3909.369688,
+          "source": "run05/fio_seq_read.json"
+        },
+        {
+          "value": 4599.580014,
+          "source": "run06/fio_seq_read.json"
+        },
+        {
+          "value": 5564.014533,
+          "source": "run07/fio_seq_read.json"
+        },
+        {
+          "value": 5455.051498,
+          "source": "run08/fio_seq_read.json"
+        },
+        {
+          "value": 3299.123363,
+          "source": "run09/fio_seq_read.json"
+        },
+        {
+          "value": 8325.222493,
+          "source": "run10/fio_seq_read.json"
+        }
+      ],
+      "n": 10,
+      "mean": 5700.7333089,
+      "median": 4323.222559,
+      "stddev": 3355.845850207449,
+      "minimum": 3299.123363,
+      "maximum": 14296.9901,
+      "q1": 3808.4480515,
+      "q3": 5536.773774249999,
+      "outlier_indices": [
+        0,
+        9
+      ],
+      "outlier_percent": 20.0,
+      "warnings": [
+        "外れ値 2/10件 (20.0%)",
+        "外れ値が多いため測定条件を確認してください"
+      ],
+      "filtered": {
+        "n": 8,
+        "mean": 4298.140062,
+        "median": 3978.117396,
+        "stddev": 830.9715060616322
+      }
+    },
+    {
+      "key": "fio.seq_read.latency",
+      "unit": "µs",
+      "samples": [
+        {
+          "value": 69.81036287500001,
+          "source": "run01/fio_seq_read.json"
+        },
+        {
+          "value": 267.250688625,
+          "source": "run02/fio_seq_read.json"
+        },
+        {
+          "value": 264.549678758,
+          "source": "run03/fio_seq_read.json"
+        },
+        {
+          "value": 246.7789262,
+          "source": "run04/fio_seq_read.json"
+        },
+        {
+          "value": 255.53458651100001,
+          "source": "run05/fio_seq_read.json"
+        },
+        {
+          "value": 216.99532569299998,
+          "source": "run06/fio_seq_read.json"
+        },
+        {
+          "value": 179.46929905500002,
+          "source": "run07/fio_seq_read.json"
+        },
+        {
+          "value": 183.02667658599998,
+          "source": "run08/fio_seq_read.json"
+        },
+        {
+          "value": 302.67073009899997,
+          "source": "run09/fio_seq_read.json"
+        },
+        {
+          "value": 119.923549577,
+          "source": "run10/fio_seq_read.json"
+        }
+      ],
+      "n": 10,
+      "mean": 210.6009823979,
+      "median": 231.8871259465,
+      "stddev": 72.83098313235858,
+      "minimum": 69.81036287500001,
+      "maximum": 302.67073009899997,
+      "q1": 180.35864343775003,
+      "q3": 262.29590569625003,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 210.6009823979,
+        "median": 231.8871259465,
+        "stddev": 72.83098313235858
+      }
+    },
+    {
+      "key": "fio.seq_read.throughput",
+      "unit": "MiB/s",
+      "samples": [
+        {
+          "value": 14296.990099906921,
+          "source": "run01/fio_seq_read.json"
+        },
+        {
+          "value": 3736.308789253235,
+          "source": "run02/fio_seq_read.json"
+        },
+        {
+          "value": 3774.807505607605,
+          "source": "run03/fio_seq_read.json"
+        },
+        {
+          "value": 4046.8651037216187,
+          "source": "run04/fio_seq_read.json"
+        },
+        {
+          "value": 3909.3696870803833,
+          "source": "run05/fio_seq_read.json"
+        },
+        {
+          "value": 4599.5800132751465,
+          "source": "run06/fio_seq_read.json"
+        },
+        {
+          "value": 5564.014532089233,
+          "source": "run07/fio_seq_read.json"
+        },
+        {
+          "value": 5455.051497459412,
+          "source": "run08/fio_seq_read.json"
+        },
+        {
+          "value": 3299.1233625411987,
+          "source": "run09/fio_seq_read.json"
+        },
+        {
+          "value": 8325.222492218018,
+          "source": "run10/fio_seq_read.json"
+        }
+      ],
+      "n": 10,
+      "mean": 5700.733308315277,
+      "median": 4323.222558498383,
+      "stddev": 3355.8458503278157,
+      "minimum": 3299.1233625411987,
+      "maximum": 14296.990099906921,
+      "q1": 3808.4480509757996,
+      "q3": 5536.773773431778,
+      "outlier_indices": [
+        0,
+        9
+      ],
+      "outlier_percent": 20.0,
+      "warnings": [
+        "外れ値 2/10件 (20.0%)",
+        "外れ値が多いため測定条件を確認してください"
+      ],
+      "filtered": {
+        "n": 8,
+        "mean": 4298.140061378479,
+        "median": 3978.117395401001,
+        "stddev": 830.9715059780642
+      }
+    },
+    {
+      "key": "fio.seq_write.iops",
+      "unit": "IOPS",
+      "samples": [
+        {
+          "value": 4054.264858,
+          "source": "run01/fio_seq_write.json"
+        },
+        {
+          "value": 5564.314523,
+          "source": "run02/fio_seq_write.json"
+        },
+        {
+          "value": 1468.384387,
+          "source": "run03/fio_seq_write.json"
+        },
+        {
+          "value": 5323.68921,
+          "source": "run04/fio_seq_write.json"
+        },
+        {
+          "value": 1489.550348,
+          "source": "run05/fio_seq_write.json"
+        },
+        {
+          "value": 1409.586347,
+          "source": "run06/fio_seq_write.json"
+        },
+        {
+          "value": 2587.547082,
+          "source": "run07/fio_seq_write.json"
+        },
+        {
+          "value": 1473.870151,
+          "source": "run08/fio_seq_write.json"
+        },
+        {
+          "value": 1666.344455,
+          "source": "run09/fio_seq_write.json"
+        },
+        {
+          "value": 4834.472184,
+          "source": "run10/fio_seq_write.json"
+        }
+      ],
+      "n": 10,
+      "mean": 2987.2023545,
+      "median": 2126.9457684999998,
+      "stddev": 1760.2055520138995,
+      "minimum": 1409.586347,
+      "maximum": 5564.314523,
+      "q1": 1477.79020025,
+      "q3": 4639.4203525,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 2987.2023545,
+        "median": 2126.9457684999998,
+        "stddev": 1760.2055520138995
+      }
+    },
+    {
+      "key": "fio.seq_write.latency",
+      "unit": "µs",
+      "samples": [
+        {
+          "value": 246.441032952,
+          "source": "run01/fio_seq_write.json"
+        },
+        {
+          "value": 179.56995483900002,
+          "source": "run02/fio_seq_write.json"
+        },
+        {
+          "value": 679.881730847,
+          "source": "run03/fio_seq_write.json"
+        },
+        {
+          "value": 187.698737353,
+          "source": "run04/fio_seq_write.json"
+        },
+        {
+          "value": 670.0515339460001,
+          "source": "run05/fio_seq_write.json"
+        },
+        {
+          "value": 707.939804228,
+          "source": "run06/fio_seq_write.json"
+        },
+        {
+          "value": 385.837661067,
+          "source": "run07/fio_seq_write.json"
+        },
+        {
+          "value": 677.074827982,
+          "source": "run08/fio_seq_write.json"
+        },
+        {
+          "value": 599.0330977760001,
+          "source": "run09/fio_seq_write.json"
+        },
+        {
+          "value": 206.64070121100002,
+          "source": "run10/fio_seq_write.json"
+        }
+      ],
+      "n": 10,
+      "mean": 454.0169082201,
+      "median": 492.43537942150004,
+      "stddev": 232.88644954038207,
+      "minimum": 179.56995483900002,
+      "maximum": 707.939804228,
+      "q1": 216.59078414625,
+      "q3": 675.319004473,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 454.0169082201,
+        "median": 492.43537942150004,
+        "stddev": 232.88644954038207
+      }
+    },
+    {
+      "key": "fio.seq_write.throughput",
+      "unit": "MiB/s",
+      "samples": [
+        {
+          "value": 4054.2648572921753,
+          "source": "run01/fio_seq_write.json"
+        },
+        {
+          "value": 5564.314522743225,
+          "source": "run02/fio_seq_write.json"
+        },
+        {
+          "value": 1468.3843870162964,
+          "source": "run03/fio_seq_write.json"
+        },
+        {
+          "value": 5323.689209938049,
+          "source": "run04/fio_seq_write.json"
+        },
+        {
+          "value": 1489.5503482818604,
+          "source": "run05/fio_seq_write.json"
+        },
+        {
+          "value": 1409.5863466262817,
+          "source": "run06/fio_seq_write.json"
+        },
+        {
+          "value": 2587.5470809936523,
+          "source": "run07/fio_seq_write.json"
+        },
+        {
+          "value": 1473.870150566101,
+          "source": "run08/fio_seq_write.json"
+        },
+        {
+          "value": 1666.3444547653198,
+          "source": "run09/fio_seq_write.json"
+        },
+        {
+          "value": 4834.472184181213,
+          "source": "run10/fio_seq_write.json"
+        }
+      ],
+      "n": 10,
+      "mean": 2987.2023542404177,
+      "median": 2126.945767879486,
+      "stddev": 1760.205552031857,
+      "minimum": 1409.5863466262817,
+      "maximum": 5564.314522743225,
+      "q1": 1477.790199995041,
+      "q3": 4639.420352458954,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 2987.2023542404177,
+        "median": 2126.945767879486,
+        "stddev": 1760.205552031857
+      }
+    }
+  ]
+}

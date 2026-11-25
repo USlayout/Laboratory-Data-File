@@ -1,0 +1,2 @@
+﻿key,unit,n,mean,median,stddev,minimum,maximum,outlier_percent,warnings
+sysbench.cpu.events,events/s,10,6058.96,6059.455,1.4974496838142124,6056.85,6061.03,0.0,
