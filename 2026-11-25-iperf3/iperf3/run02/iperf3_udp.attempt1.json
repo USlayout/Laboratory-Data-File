@@ -1,0 +1,26 @@
+{
+	"start":	{
+		"connected":	[],
+		"version":	"iperf 3.20",
+		"system_info":	"Linux kitalab 7.0.0-27-generic #27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026 x86_64",
+		"timestamp":	{
+			"time":	"Wed, 25 Nov 2026 03:58:40 GMT",
+			"timesecs":	1795579120,
+			"timemillisecs":	1795579120191
+		},
+		"connecting_to":	{
+			"host":	"192.168.50.65",
+			"port":	5201
+		},
+		"cookie":	"phvbnthmj3c73jalsl74srqylrdqchz6vta2",
+		"target_bitrate":	1000000000,
+		"fq_rate":	0,
+		"sock_bufsize":	0,
+		"sndbuf_actual":	212992,
+		"rcvbuf_actual":	212992
+	},
+	"intervals":	[],
+	"end":	{
+	},
+	"error":	"unable to read from stream socket: Resource temporarily unavailable"
+}
