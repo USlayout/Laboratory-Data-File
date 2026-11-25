@@ -1,0 +1,11 @@
+﻿metric,unit,source,value,outlier
+sysbench.cpu.events,events/s,run01/cpu/sysbench_cpu_result.txt,6034.3,False
+sysbench.cpu.events,events/s,run02/cpu/sysbench_cpu_result.txt,6035.43,False
+sysbench.cpu.events,events/s,run03/cpu/sysbench_cpu_result.txt,6034.1,False
+sysbench.cpu.events,events/s,run04/cpu/sysbench_cpu_result.txt,6032.69,False
+sysbench.cpu.events,events/s,run05/cpu/sysbench_cpu_result.txt,6031.65,False
+sysbench.cpu.events,events/s,run06/cpu/sysbench_cpu_result.txt,6029.98,True
+sysbench.cpu.events,events/s,run07/cpu/sysbench_cpu_result.txt,6034.66,False
+sysbench.cpu.events,events/s,run08/cpu/sysbench_cpu_result.txt,6033.21,False
+sysbench.cpu.events,events/s,run09/cpu/sysbench_cpu_result.txt,6033.25,False
+sysbench.cpu.events,events/s,run10/cpu/sysbench_cpu_result.txt,6035.78,False
