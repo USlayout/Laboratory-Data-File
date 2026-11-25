@@ -440,10 +440,14 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
+    { name = "pillow" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "matplotlib", specifier = ">=3.9,<4" }]
+requires-dist = [
+    { name = "matplotlib", specifier = ">=3.9,<4" },
+    { name = "pillow", specifier = ">=10,<14" },
+]
 
 [[package]]
 name = "tzdata"

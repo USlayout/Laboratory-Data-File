@@ -21,7 +21,7 @@ class AnalysisTests(unittest.TestCase):
         self.assertTrue(any("多い" in w for w in result["warnings"]))
 
     def test_real_data(self):
-        report = analyze_folder((Path(__file__).resolve().parents[2] / "2026-11-25-sysbench-cpu"), "Host")
+        report = analyze_folder((Path(__file__).resolve().parents[2] / "sample/2026-11-25-sysbench-cpu"), "Host")
         self.assertEqual(report["metrics"][0]["n"], 10)
         report = analyze_folder((Path(__file__).resolve().parents[2] / "2026-11-10-18-17-56"), "Host")
         self.assertEqual(len(report["metrics"]), 15)

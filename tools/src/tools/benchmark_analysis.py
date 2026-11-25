@@ -7,10 +7,21 @@ import math
 import re
 import statistics as st
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
 SCHEMA = "benchmark-analysis-v1"
+
+
+def read_measurement(path):
+    try:
+        parsed = parse_file(path)
+        if any(not isinstance(v, (int, float)) or not math.isfinite(v) or v < 0 for _, _, v in parsed):
+            raise ValueError("負数・非有限の測定値です")
+        return parsed, None
+    except (ValueError, KeyError, TypeError, OSError, IndexError) as exc:
+        return [], str(exc)
 
 
 def describe(values: list[float], warning_percent: float = 20) -> dict:
@@ -102,6 +113,7 @@ def analyze_folder(folder: Path, environment: str, warning_percent: float = 20) 
              "fio_seq_read.json", "fio_seq_write.json", "fio_rand_read.json", "fio_rand_write.json",
              "iperf3_tcp.json", "iperf3_udp.json"}
     import os
+    measurement_paths = []
     for directory, dirs, files in os.walk(folder):
         dirs[:] = sorted(d for d in dirs if d not in {"venv", ".venv", ".git", "__pycache__", "analysis_output"})
         for name in sorted(files):
@@ -113,14 +125,16 @@ def analyze_folder(folder: Path, environment: str, warning_percent: float = 20) 
                 warnings.append(f"失敗・再試行の記録: {relative}")
             if name not in names:
                 continue
-            try:
-                parsed = parse_file(path)
-                if any(not isinstance(v, (int, float)) or not math.isfinite(v) or v < 0 for _, _, v in parsed):
-                    raise ValueError("負数・非有限の測定値です")
+            measurement_paths.append(path)
+    # 結果順序を固定し、I/O待ちの重なるファイル読み込みを並列化する。
+    with ThreadPoolExecutor(max_workers=min(8, (os.cpu_count() or 2) + 2)) as pool:
+        for path, (parsed, error) in zip(measurement_paths, pool.map(read_measurement, measurement_paths)):
+            relative = path.relative_to(folder).as_posix()
+            if error is not None:
+                warnings.append(f"読み込み除外: {relative}: {error}")
+            else:
                 for key, unit, value in parsed:
                     grouped[key, unit].append(dict(value=value, source=relative))
-            except (ValueError, KeyError, TypeError, OSError, IndexError) as exc:
-                warnings.append(f"読み込み除外: {relative}: {exc}")
     if not grouped:
         raise ValueError("対応する有効な測定データがありません。\n" + "\n".join(warnings[:8]))
     metrics = []

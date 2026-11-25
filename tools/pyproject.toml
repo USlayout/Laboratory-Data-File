@@ -7,7 +7,7 @@ authors = [
     { name = "( ´•ω•` )", email = "149782427+USlayout@users.noreply.github.com" }
 ]
 requires-python = ">=3.13"
-dependencies = ["matplotlib>=3.9,<4"]
+dependencies = ["matplotlib>=3.9,<4", "pillow>=10,<14"]
 
 [project.scripts]
 tools = "tools:main"

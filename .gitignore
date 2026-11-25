@@ -3,3 +3,4 @@ venv/
 __pycache__/
 *.pyc
 analysis_output/
+.gui_state/
