@@ -1,0 +1,4 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.1  0.0   4776  4132 pts/0    Ss   17:05   0:00 /bin/bash
+root           8  0.0  0.0   4644  3664 pts/0    S+   17:05   0:00 bash ./sysbench_cpu_benchmark.sh --runs 1
+root          30  0.0  0.0   6764  4024 pts/0    R+   17:05   0:00 ps aux --sort=-%cpu
