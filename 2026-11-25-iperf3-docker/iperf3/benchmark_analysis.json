@@ -1,0 +1,278 @@
+{
+  "schema": "benchmark-analysis-v1",
+  "environment": "docker",
+  "source": "C:\\Users\\soeno\\GitHub\\Laboratory-Data-File\\2026-11-25-iperf3-docker\\iperf3",
+  "created": "2026-11-25T18:07:56+09:00",
+  "policy": {
+    "stddev": "sample (ddof=1)",
+    "outliers": "Tukey 1.5 IQR; inclusive quartiles; n>=4",
+    "warning_percent": 20.0,
+    "excluded_automatically": false
+  },
+  "metadata": {},
+  "warnings": [],
+  "metrics": [
+    {
+      "key": "iperf3.tcp.throughput",
+      "unit": "Mbit/s",
+      "samples": [
+        {
+          "value": 938.0424099074679,
+          "source": "run01/iperf3_tcp.json"
+        },
+        {
+          "value": 939.2985072318705,
+          "source": "run02/iperf3_tcp.json"
+        },
+        {
+          "value": 931.5985471668547,
+          "source": "run03/iperf3_tcp.json"
+        },
+        {
+          "value": 936.8636662798559,
+          "source": "run04/iperf3_tcp.json"
+        },
+        {
+          "value": 940.2665406361076,
+          "source": "run05/iperf3_tcp.json"
+        },
+        {
+          "value": 938.4976959529866,
+          "source": "run06/iperf3_tcp.json"
+        },
+        {
+          "value": 937.7020707995549,
+          "source": "run07/iperf3_tcp.json"
+        },
+        {
+          "value": 940.269736750242,
+          "source": "run08/iperf3_tcp.json"
+        },
+        {
+          "value": 939.9576154262704,
+          "source": "run09/iperf3_tcp.json"
+        },
+        {
+          "value": 937.3224421414598,
+          "source": "run10/iperf3_tcp.json"
+        }
+      ],
+      "n": 10,
+      "mean": 937.9819232292671,
+      "median": 938.2700529302273,
+      "stddev": 2.5575861424192685,
+      "minimum": 931.5985471668547,
+      "maximum": 940.269736750242,
+      "q1": 937.4173493059835,
+      "q3": 939.7928383776705,
+      "outlier_indices": [
+        2
+      ],
+      "outlier_percent": 10.0,
+      "warnings": [
+        "外れ値 1/10件 (10.0%)"
+      ],
+      "filtered": {
+        "n": 9,
+        "mean": 938.6911872362017,
+        "median": 938.4976959529866,
+        "stddev": 1.3036598983764467
+      }
+    },
+    {
+      "key": "iperf3.udp.jitter",
+      "unit": "ms",
+      "samples": [
+        {
+          "value": 0.02254636476002688,
+          "source": "run01/iperf3_udp.json"
+        },
+        {
+          "value": 0.0189404771646709,
+          "source": "run02/iperf3_udp.json"
+        },
+        {
+          "value": 0.02609929364516656,
+          "source": "run03/iperf3_udp.json"
+        },
+        {
+          "value": 0.018099623587480206,
+          "source": "run04/iperf3_udp.json"
+        },
+        {
+          "value": 0.0195263451964759,
+          "source": "run05/iperf3_udp.json"
+        },
+        {
+          "value": 0.017922755224298748,
+          "source": "run06/iperf3_udp.json"
+        },
+        {
+          "value": 0.0143901630802504,
+          "source": "run07/iperf3_udp.json"
+        },
+        {
+          "value": 0.039477013541718446,
+          "source": "run08/iperf3_udp.json"
+        },
+        {
+          "value": 0.03944555916563123,
+          "source": "run09/iperf3_udp.json"
+        },
+        {
+          "value": 0.021950992078906377,
+          "source": "run10/iperf3_udp.json"
+        }
+      ],
+      "n": 10,
+      "mean": 0.023839858744462563,
+      "median": 0.020738668637691138,
+      "stddev": 0.008808291464373745,
+      "minimum": 0.0143901630802504,
+      "maximum": 0.039477013541718446,
+      "q1": 0.018309836981777877,
+      "q3": 0.025211061423881645,
+      "outlier_indices": [
+        7,
+        8
+      ],
+      "outlier_percent": 20.0,
+      "warnings": [
+        "外れ値 2/10件 (20.0%)",
+        "外れ値が多いため測定条件を確認してください"
+      ],
+      "filtered": {
+        "n": 8,
+        "mean": 0.019934501842159495,
+        "median": 0.0192334111805734,
+        "stddev": 0.00354966780394806
+      }
+    },
+    {
+      "key": "iperf3.udp.loss",
+      "unit": "%",
+      "samples": [
+        {
+          "value": 5.159751076597193,
+          "source": "run01/iperf3_udp.json"
+        },
+        {
+          "value": 5.20021035756152,
+          "source": "run02/iperf3_udp.json"
+        },
+        {
+          "value": 5.376835662344312,
+          "source": "run03/iperf3_udp.json"
+        },
+        {
+          "value": 5.295817479923734,
+          "source": "run04/iperf3_udp.json"
+        },
+        {
+          "value": 5.126782425372702,
+          "source": "run05/iperf3_udp.json"
+        },
+        {
+          "value": 5.195196830114836,
+          "source": "run06/iperf3_udp.json"
+        },
+        {
+          "value": 5.115032534376163,
+          "source": "run07/iperf3_udp.json"
+        },
+        {
+          "value": 5.242971936396734,
+          "source": "run08/iperf3_udp.json"
+        },
+        {
+          "value": 5.16487649225176,
+          "source": "run09/iperf3_udp.json"
+        },
+        {
+          "value": 5.39856379113424,
+          "source": "run10/iperf3_udp.json"
+        }
+      ],
+      "n": 10,
+      "mean": 5.22760385860732,
+      "median": 5.1977035938381775,
+      "stddev": 0.09975710059637748,
+      "minimum": 5.115032534376163,
+      "maximum": 5.39856379113424,
+      "q1": 5.161032430510835,
+      "q3": 5.282606094041984,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 5.22760385860732,
+        "median": 5.1977035938381775,
+        "stddev": 0.09975710059637748
+      }
+    },
+    {
+      "key": "iperf3.udp.throughput",
+      "unit": "Mbit/s",
+      "samples": [
+        {
+          "value": 946.223473443472,
+          "source": "run01/iperf3_udp.json"
+        },
+        {
+          "value": 947.5824471134187,
+          "source": "run02/iperf3_udp.json"
+        },
+        {
+          "value": 945.8168066509583,
+          "source": "run03/iperf3_udp.json"
+        },
+        {
+          "value": 946.6329079104926,
+          "source": "run04/iperf3_udp.json"
+        },
+        {
+          "value": 948.3612240102044,
+          "source": "run05/iperf3_udp.json"
+        },
+        {
+          "value": 947.6845078085046,
+          "source": "run06/iperf3_udp.json"
+        },
+        {
+          "value": 948.472504369356,
+          "source": "run07/iperf3_udp.json"
+        },
+        {
+          "value": 947.1793717746281,
+          "source": "run08/iperf3_udp.json"
+        },
+        {
+          "value": 947.951491377399,
+          "source": "run09/iperf3_udp.json"
+        },
+        {
+          "value": 945.6323537427841,
+          "source": "run10/iperf3_udp.json"
+        }
+      ],
+      "n": 10,
+      "mean": 947.1537088201218,
+      "median": 947.3809094440234,
+      "stddev": 1.029476374225373,
+      "minimum": 945.6323537427841,
+      "maximum": 948.472504369356,
+      "q1": 946.3258320602272,
+      "q3": 947.8847454851752,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 947.1537088201218,
+        "median": 947.3809094440234,
+        "stddev": 1.029476374225373
+      }
+    }
+  ]
+}
