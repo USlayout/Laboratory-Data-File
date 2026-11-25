@@ -1,0 +1,12 @@
+===== systemd-detect-virt =====
+kvm
+
+===== hypervisor flag =====
+hypervisor
+
+===== docker ps -a =====
+CONTAINER ID   IMAGE                    COMMAND       CREATED       STATUS                     PORTS     NAMES
+85f7f1633967   ubuntu-benchmark:26.04   "/bin/bash"   3 weeks ago   Exited (137) 4 hours ago             docker-bench
+
+===== virsh list --all =====
+virsh is not installed
