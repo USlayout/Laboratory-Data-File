@@ -3,10 +3,22 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tools.benchmark_analysis import analyze_folder, common_metrics, describe, load_analysis, parse_file, save_analysis
+from tools.benchmark_analysis import analysis_filename, analyze_folder, common_metrics, describe, load_analysis, parse_file, save_analysis
 
 
 class AnalysisTests(unittest.TestCase):
+    def test_analysis_filenames(self):
+        for keys, expected in (
+            (["sysbench.cpu.events"], "sysbench_cpu_benchmark.json"),
+            (["sysbench.memory.read", "sysbench.memory.write"], "sysbench_memory_benchmark.json"),
+            (["fio.rand_read.iops", "fio.seq_write.throughput"], "fio_benchmark.json"),
+            (["iperf3.tcp.throughput", "iperf3.udp.loss"], "iperf3_benchmark.json"),
+            (["sysbench.memory.read", "sysbench.cpu.events"], "sysbench_cpu_memory_benchmark.json"),
+            (["fio.rand_read.iops", "sysbench.cpu.events"], "sysbench_cpu_fio_benchmark.json"),
+        ):
+            with self.subTest(keys=keys):
+                self.assertEqual(analysis_filename({"metrics": [{"key": key} for key in keys]}), expected)
+
     def test_sample_stddev_and_small_samples(self):
         self.assertEqual(describe([1, 2, 3])["stddev"], 1)
         self.assertIsNone(describe([5])["stddev"])

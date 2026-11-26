@@ -23,6 +23,7 @@ uv sync
 
 ### 自動命名・非同期処理・解析履歴
 
+- 解析JSONの保存名も内容から自動入力します。CPUのみは `sysbench_cpu_benchmark.json`、メモリは `sysbench_memory_benchmark.json`、fioは `fio_benchmark.json`、iperf3は `iperf3_benchmark.json` です。複数種類を解析した場合は `sysbench_cpu_memory_fio_benchmark.json` のようにまとめます。集計CSV・測定値CSVにも同じ名前を使用します。保存時に名前を変更することもできます。
 - グラフ保存ダイアログには、`fio_rand_read_iops.png`、`iperf3_tcp_throughput.png` などの名前を自動入力します。外れ値を除いた参考値には `_filtered` を付けます。表示中のグラフに対応した名前で、自由に変更できます。
 - 「全指標PNG一括保存」は保存フォルダを選ぶだけで、全環境に共通する指標を自動命名で保存します。同名ファイルがある場合は上書き確認し、進捗と失敗件数を表示します。
 - グラフ生成・保存は別プロセスで実行します。最大4プロセスで、CPU数に合わせて制限します。一括保存は複数指標を並列生成し、可能な場合は画面操作用に1プロセス分を確保します。初回はプロセス起動・フォント読み込みに時間がかかります。

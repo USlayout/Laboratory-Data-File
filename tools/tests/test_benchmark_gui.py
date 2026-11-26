@@ -55,6 +55,9 @@ class GuiTests(unittest.TestCase):
                 self.assertEqual(str(app.analyze_button["state"]), "disabled")
                 self.wait_for(root, lambda: app.report is not None and bool(app.history_table.get_children()))
                 self.assertEqual(len(app.table.get_children()), 2)
+                with patch("tools.benchmark_gui.filedialog.asksaveasfilename", return_value="") as dialog:
+                    app.save()
+                    self.assertEqual(dialog.call_args.kwargs["initialfile"], "sysbench_cpu_memory_benchmark.json")
                 app.table.selection_set("0")
                 app.show_detail()
                 self.assertIn("run01", app.details.get("1.0", "end"))

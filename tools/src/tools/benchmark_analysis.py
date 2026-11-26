@@ -150,6 +150,20 @@ def analyze_folder(folder: Path, environment: str, warning_percent: float = 20) 
                 metadata=metadata, warnings=warnings, metrics=metrics)
 
 
+def analysis_filename(report: dict) -> str:
+    """Name the report from its actual metrics, including combined datasets."""
+    keys = [metric["key"] for metric in report["metrics"]]
+    parts = []
+    sysbench = [kind for kind in ("cpu", "memory")
+                if any(key.startswith(f"sysbench.{kind}.") for key in keys)]
+    if sysbench:
+        parts.append("sysbench_" + "_".join(sysbench))
+    for tool in ("fio", "iperf3"):
+        if any(key.startswith(tool + ".") for key in keys):
+            parts.append(tool)
+    return ("_".join(parts) + "_benchmark.json") if parts else "benchmark.json"
+
+
 def save_analysis(report: dict, destination: Path) -> None:
     destination.write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
     with destination.with_suffix(".csv").open("w", encoding="utf-8-sig", newline="") as out:

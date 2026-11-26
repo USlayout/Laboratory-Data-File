@@ -12,7 +12,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
-from .benchmark_analysis import analyze_folder, common_metrics, load_analysis, save_analysis
+from .benchmark_analysis import analysis_filename, analyze_folder, common_metrics, load_analysis, save_analysis
 from .history import History
 from .plotting import graph_filename, render_graph, export_graph_file
 
@@ -283,7 +283,7 @@ class BenchmarkApp(ttk.Frame):
         if not self.report:
             return
         path = filedialog.asksaveasfilename(title="解析結果を保存（同名CSVと測定値CSVも保存）", defaultextension=".json",
-                                          initialfile="benchmark_analysis.json", filetypes=[("解析JSON", "*.json")])
+                                          initialfile=analysis_filename(self.report), filetypes=[("解析JSON", "*.json")])
         if path:
             try:
                 destination = Path(path)
