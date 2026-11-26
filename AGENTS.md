@@ -11,6 +11,12 @@ Host、Docker、KVM、KVM上のDockerにおける
 - ネットワーク（iperf3）
 - PコアとEコアの性能差
 
+## 名前について
+- Host
+- KVM
+- Docker
+- DOK Docker On KVM
+
 ## 解析手順
 1. 測定データとグラフを確認する。
 2. 平均値、中央値、標準偏差を確認する。
