@@ -1,0 +1,81 @@
+{
+  "schema": "benchmark-analysis-v1",
+  "environment": "Docker",
+  "source": "D:\\Laboratory-Data-File\\pcore4\\20261125\\2026-11-25-sysbench-cpu-docker",
+  "created": "2026-11-26T12:27:17+09:00",
+  "policy": {
+    "stddev": "sample (ddof=1)",
+    "outliers": "Tukey 1.5 IQR; inclusive quartiles; n>=4",
+    "warning_percent": 20.0,
+    "excluded_automatically": false
+  },
+  "metadata": {
+    "metadata.txt": "実行日時       : 2026-11-25\nホスト名       : 99ba92c336df\n実行ユーザー   : root\nラベル         : sysbench-cpu\nCPUスレッド数  : 4\nCPU affinity   : 0,2,4,6\n実行回数       : 10\n\n[sysbench]\nCPU max prime  : 20000\nCPU time       : 60\nMemory size    : 10G\n\n[fio]\nSize           : 1G\nRuntime        : 30\n\n[iperf3]\nServer         : 192.168.50.65\nDuration       : 30\nInterval       : 10\nRetries        : 3\nRetry interval : 10\n"
+  },
+  "warnings": [],
+  "metrics": [
+    {
+      "key": "sysbench.cpu.events",
+      "unit": "events/s",
+      "samples": [
+        {
+          "value": 6054.74,
+          "source": "sysbench/run01/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6054.2,
+          "source": "sysbench/run02/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6054.91,
+          "source": "sysbench/run03/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6052.26,
+          "source": "sysbench/run04/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6053.48,
+          "source": "sysbench/run05/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6054.31,
+          "source": "sysbench/run06/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6055.3,
+          "source": "sysbench/run07/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6055.96,
+          "source": "sysbench/run08/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6053.69,
+          "source": "sysbench/run09/cpu/sysbench_cpu_result.txt"
+        },
+        {
+          "value": 6055.47,
+          "source": "sysbench/run10/cpu/sysbench_cpu_result.txt"
+        }
+      ],
+      "n": 10,
+      "mean": 6054.432,
+      "median": 6054.525,
+      "stddev": 1.0919991859989409,
+      "minimum": 6052.26,
+      "maximum": 6055.96,
+      "q1": 6053.8175,
+      "q3": 6055.2025,
+      "outlier_indices": [],
+      "outlier_percent": 0.0,
+      "warnings": [],
+      "filtered": {
+        "n": 10,
+        "mean": 6054.432,
+        "median": 6054.525,
+        "stddev": 1.0919991859989409
+      }
+    }
+  ]
+}

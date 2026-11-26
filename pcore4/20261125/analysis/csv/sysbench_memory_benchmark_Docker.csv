@@ -1,0 +1,3 @@
+﻿key,unit,n,mean,median,stddev,minimum,maximum,outlier_percent,warnings
+sysbench.memory.read,MiB/s,10,41482.072,41265.025,982.6083602760777,39969.91,42622.81,0.0,
+sysbench.memory.write,MiB/s,10,8826.372,8751.244999999999,213.89224575836215,8554.37,9209.33,0.0,

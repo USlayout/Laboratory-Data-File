@@ -1,0 +1,2 @@
+﻿key,unit,n,mean,median,stddev,minimum,maximum,outlier_percent,warnings
+sysbench.cpu.events,events/s,10,6033.505,6033.675,1.7601846494048858,6029.98,6035.78,10.0,外れ値 1/10件 (10.0%)
