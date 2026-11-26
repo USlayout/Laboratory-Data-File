@@ -10,6 +10,7 @@ from tools.benchmark_analysis import analyze_folder, describe
 from tools.benchmark_gui import BenchmarkApp
 from tools.history import History
 from tools.plotting import comparison_figure, graph_filename
+from tools.environments import ENVIRONMENTS
 
 
 class HistoryTests(unittest.TestCase):
@@ -50,6 +51,9 @@ class GuiTests(unittest.TestCase):
             root.withdraw()
             app = BenchmarkApp(root, history_path=folder / "history.sqlite3")
             try:
+                self.assertEqual(str(app.environment_box["state"]), "readonly")
+                self.assertEqual(tuple(app.environment_box["values"]), ENVIRONMENTS)
+                self.assertEqual([label.get() for label in app.labels], list(ENVIRONMENTS))
                 app.folder.set(str(folder))
                 app.analyze()
                 self.assertEqual(str(app.analyze_button["state"]), "disabled")
@@ -57,7 +61,7 @@ class GuiTests(unittest.TestCase):
                 self.assertEqual(len(app.table.get_children()), 2)
                 with patch("tools.benchmark_gui.filedialog.asksaveasfilename", return_value="") as dialog:
                     app.save()
-                    self.assertEqual(dialog.call_args.kwargs["initialfile"], "sysbench_cpu_memory_benchmark.json")
+                    self.assertEqual(dialog.call_args.kwargs["initialfile"], "sysbench_cpu_memory_benchmark_Host.json")
                 app.table.selection_set("0")
                 app.show_detail()
                 self.assertIn("run01", app.details.get("1.0", "end"))
@@ -76,7 +80,7 @@ class GuiTests(unittest.TestCase):
                 root.update()
                 with patch("tools.benchmark_gui.filedialog.asksaveasfilename", return_value="") as dialog:
                     app.export_graph()
-                    self.assertEqual(dialog.call_args.kwargs["initialfile"], "sysbench_cpu_events.png")
+                    self.assertEqual(dialog.call_args.kwargs["initialfile"], "sysbench_cpu_events_Host_KVM_Docker_DOK.png")
                 svg = folder / "comparison.svg"
                 with patch("tools.benchmark_gui.filedialog.asksaveasfilename", return_value=str(svg)):
                     app.export_graph()
@@ -86,7 +90,7 @@ class GuiTests(unittest.TestCase):
                 self.wait_for(root, lambda: app.batch_done == app.batch_total)
                 self.assertEqual(app.batch_errors, [])
                 for identity in app.identities:
-                    self.assertGreater((folder / graph_filename(identity)).stat().st_size, 1000)
+                    self.assertGreater((folder / graph_filename(identity, environments=ENVIRONMENTS)).stat().st_size, 1000)
                 identity = app.history_table.get_children()[0]
                 app.report = None
                 app.history_table.selection_set(identity)
@@ -104,6 +108,8 @@ class GuiTests(unittest.TestCase):
     def test_filename_and_single_sample_graph(self):
         self.assertEqual(graph_filename(("fio.rand_read.iops", "IOPS")), "fio_rand_read_iops.png")
         self.assertEqual(graph_filename(("iperf3.tcp.throughput", "Mbit/s"), True, "svg"), "iperf3_tcp_throughput_filtered.svg")
+        self.assertEqual(graph_filename(("fio.rand_read.iops", "IOPS"), environments=("Host", "KVM")), "fio_rand_read_iops_Host_KVM.png")
+        self.assertEqual(graph_filename(("fio.rand_read.iops", "IOPS"), True, "svg", ("Docker", "KVM上Docker")), "fio_rand_read_iops_Docker_DOK_filtered.svg")
         report = {"metrics": [{"key": "test", "unit": "IOPS", **describe([10])}]}
         figure = comparison_figure([report] * 2, ["Host", "KVM"], ("test", "IOPS"), True)
         self.assertEqual(figure.axes[2].texts[0].get_text(), "N/A")

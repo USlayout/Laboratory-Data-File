@@ -10,6 +10,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
+from .environments import environment_filename
 
 SCHEMA = "benchmark-analysis-v1"
 
@@ -161,7 +162,9 @@ def analysis_filename(report: dict) -> str:
     for tool in ("fio", "iperf3"):
         if any(key.startswith(tool + ".") for key in keys):
             parts.append(tool)
-    return ("_".join(parts) + "_benchmark.json") if parts else "benchmark.json"
+    stem = ("_".join(parts) + "_benchmark") if parts else "benchmark"
+    environment = environment_filename(report.get("environment", ""))
+    return stem + ("_" + environment if environment else "") + ".json"
 
 
 def save_analysis(report: dict, destination: Path) -> None:

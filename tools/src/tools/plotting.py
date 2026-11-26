@@ -2,10 +2,14 @@
 import io
 import re
 from functools import lru_cache
+from .environments import environment_filename
 
 
-def graph_filename(identity, filtered=False, extension="png"):
+def graph_filename(identity, filtered=False, extension="png", environments=()):
     stem = re.sub(r"[^A-Za-z0-9_-]+", "_", identity[0]).strip("_") or "comparison"
+    suffix = "_".join(environment_filename(name) for name in environments)
+    if suffix:
+        stem += "_" + suffix
     return stem + ("_filtered" if filtered else "") + "." + extension
 
 

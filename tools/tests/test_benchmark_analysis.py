@@ -19,6 +19,13 @@ class AnalysisTests(unittest.TestCase):
             with self.subTest(keys=keys):
                 self.assertEqual(analysis_filename({"metrics": [{"key": key} for key in keys]}), expected)
 
+    def test_environment_in_analysis_filename(self):
+        for environment in ("Host", "KVM", "Docker", "DOK"):
+            report = {"environment": environment, "metrics": [{"key": "sysbench.cpu.events"}]}
+            self.assertEqual(analysis_filename(report), f"sysbench_cpu_benchmark_{environment}.json")
+        report["environment"] = "KVM上Docker"
+        self.assertEqual(analysis_filename(report), "sysbench_cpu_benchmark_DOK.json")
+
     def test_sample_stddev_and_small_samples(self):
         self.assertEqual(describe([1, 2, 3])["stddev"], 1)
         self.assertIsNone(describe([5])["stddev"])

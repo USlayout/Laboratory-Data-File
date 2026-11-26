@@ -14,6 +14,7 @@ from tkinter import filedialog, messagebox, ttk
 
 from .benchmark_analysis import analysis_filename, analyze_folder, common_metrics, load_analysis, save_analysis
 from .history import History
+from .environments import ENVIRONMENTS, canonical_environment
 from .plotting import graph_filename, render_graph, export_graph_file
 
 
@@ -75,7 +76,8 @@ class BenchmarkApp(ttk.Frame):
         row.pack(fill="x", pady=10)
         self.environment = tk.StringVar(value="Host")
         ttk.Label(row, text="環境名").pack(side="left")
-        ttk.Entry(row, textvariable=self.environment, width=22).pack(side="left", padx=8)
+        self.environment_box = ttk.Combobox(row, textvariable=self.environment, values=ENVIRONMENTS, state="readonly", width=18)
+        self.environment_box.pack(side="left", padx=8)
         ttk.Label(row, text="外れ値が多いとする割合 (%)").pack(side="left")
         self.threshold = tk.StringVar(value="20")
         ttk.Spinbox(row, from_=0, to=100, textvariable=self.threshold, width=6).pack(side="left", padx=8)
@@ -121,6 +123,9 @@ class BenchmarkApp(ttk.Frame):
             messagebox.showerror("入力を確認", str(exc))
             return
         environment = self.environment.get()
+        if environment not in ENVIRONMENTS:
+            messagebox.showerror("環境名を確認", "Host / KVM / Docker / DOKから環境を選択してください。")
+            return
         self.analyze_button.configure(state="disabled")
         self.save_button.configure(state="disabled")
         self.status.set("解析中…")
@@ -195,7 +200,7 @@ class BenchmarkApp(ttk.Frame):
             elif kind == "history_open":
                 self.display_report(result)
                 self.folder.set(result["source"])
-                self.environment.set(result["environment"])
+                self.environment.set(canonical_environment(result["environment"]) or "")
                 self.threshold.set(str(result["policy"]["warning_percent"]))
                 self.notebook.select(0)
                 self.status.set("履歴の保存時点の解析結果を復元しました。最新データを反映するには再解析してください。")
@@ -299,13 +304,15 @@ class BenchmarkApp(ttk.Frame):
     def build_comparison(self, parent):
         ttk.Label(parent, text="このツールで保存した解析JSONを各環境に指定してください。単位が一致する共通指標を比較します。").pack(anchor="w")
         self.labels, self.paths = [], []
-        for i, label in enumerate(("Host", "KVM", "Docker", "KVM上Docker")):
+        for i, label in enumerate(ENVIRONMENTS):
             row = ttk.Frame(parent)
             row.pack(fill="x", pady=3)
             name, path = tk.StringVar(value=label), tk.StringVar(value="未選択")
             self.labels.append(name)
             self.paths.append(path)
-            ttk.Entry(row, textvariable=name, width=18).pack(side="left")
+            selector = ttk.Combobox(row, textvariable=name, values=ENVIRONMENTS, state="readonly", width=16)
+            selector.pack(side="left")
+            selector.bind("<<ComboboxSelected>>", lambda event: self.discard_plot())
             ttk.Button(row, text="解析JSONを選択", command=lambda index=i: self.pick_report(index)).pack(side="left", padx=8)
             ttk.Label(row, textvariable=path).pack(side="left", fill="x", expand=True)
             ttk.Button(row, text="解除", command=lambda index=i: self.clear_report(index)).pack(side="right")
@@ -369,7 +376,7 @@ class BenchmarkApp(ttk.Frame):
             messagebox.showerror("比較データを確認", "2～4環境と共通指標を選択してください。")
             return None
         labels = [label for _, label in selected]
-        if any(not label for label in labels) or len(set(labels)) != len(labels):
+        if any(label not in ENVIRONMENTS for label in labels) or len(set(labels)) != len(labels):
             messagebox.showerror("環境名を確認", "空欄や重複がない環境名を入力してください。")
             return None
         return copy.deepcopy([r for r, _ in selected]), labels
@@ -438,7 +445,7 @@ class BenchmarkApp(ttk.Frame):
             messagebox.showinfo("先にグラフを表示", "保存するグラフを表示してください。")
             return
         reports, labels, identity, filtered = self.graph_request
-        path = filedialog.asksaveasfilename(initialfile=graph_filename(identity, filtered), defaultextension=".png",
+        path = filedialog.asksaveasfilename(initialfile=graph_filename(identity, filtered, environments=labels), defaultextension=".png",
                                           filetypes=[("PNG", "*.png"), ("SVG", "*.svg")])
         if path:
             if Path(path).suffix.lower() not in {".png", ".svg"}:
@@ -455,7 +462,7 @@ class BenchmarkApp(ttk.Frame):
         if not folder:
             return
         filtered = self.filtered.get()
-        destinations = [Path(folder) / graph_filename(identity, filtered) for identity in self.identities]
+        destinations = [Path(folder) / graph_filename(identity, filtered, environments=inputs[1]) for identity in self.identities]
         if any(path.exists() for path in destinations) and not messagebox.askyesno("上書き確認", "同名のグラフを上書きしますか？"):
             return
         self.batch_done, self.batch_total, self.batch_errors = 0, len(destinations), []
