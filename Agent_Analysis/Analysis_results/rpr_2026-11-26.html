@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Host、KVM、Docker環境の性能測定結果と今後の確認事項をまとめた研究経過報告です。">
+  <title>性能測定結果の分析 | 卒研web</title>
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span><span><strong>卒研web</strong><small>GRADUATION RESEARCH ・ Gr03</small></span></a></header>
+    <main class="page-grid article-layout">
+      <section class="main-column">
+        <a class="back-link" href="../index.html">← トップページへ戻る</a>
+        <article class="article-paper">
+          <div class="article-date">2026.11.26</div>
+          <h1>性能測定結果の分析</h1>
+          <p class="article-subtitle">Host・KVM・Docker環境の比較と今後の確認</p>
+          <div class="article-meta"><span><strong>グループ：</strong>Gr03</span><span><strong>対象：</strong>2026年11月25日測定</span></div>
+          <section class="article-section"><h2>研究テーマ</h2><p>Host、KVM、Docker環境の性能差と、その要因を調査しています。</p></section>
+          <section class="article-section"><h2>今回の結果</h2><ul>
+            <li>CPU性能は4環境でほぼ同等でした。</li>
+            <li>KVMとKVM上のDockerでは、fioのランダムI/O性能低下と、UDPのパケット損失増加が見られました。</li>
+            <li>Memory READは環境による差が大きく、CPU affinityやキャッシュなどの影響を確認する必要があります。</li>
+          </ul><p>測定回数と集計条件に不整合があるため、現時点では原因を断定できません。</p></section>
+          <section class="article-section"><h2>次回の見直し</h2><h3>fio</h3><ul><li>Host・KVM・Dockerで、測定先の物理ディスク、パーティション、ファイルシステム、空き容量が同じ条件か確認して記録します。</li><li>KVM/DOKは仮想ディスク形式、virtio設定、キャッシュ/I/Oモード、ホスト側の保存先を確認します。</li><li>現行スクリプトの4 KiB・4 jobs・iodepth 32・1 GiB・30秒をそろえ、direct I/Oの有無も統一してランダムREAD/WRITEを再測定します。JSONでIOPS・帯域・レイテンシを保存します。</li></ul><h3>メモリー</h3><ul><li>READの平均はKVM 41,209、Docker 41,482 MiB/sに対し、Host 32,614、DOK 32,366 MiB/sです。まずsysbenchの転送量10G、4スレッド、実行時間、READ/WRITE条件が全環境で一致するか確認します。</li><li>affinityのCPU番号が環境ごとにどの物理コアへ対応するか確認し、ゲストvCPUの割当てとホスト側pinningも記録します。</li><li>各環境で同じ条件を複数回実行し、平均・中央値・標準偏差に加えてCPU使用率、クロック、温度、バックグラウンド負荷を記録します。作業セットの大きさも変えて、キャッシュの影響を切り分けます。</li></ul></section>
+          <section class="article-section"><h2>作業効率の改善</h2><p>解析作業を効率化するため、作業用ツールを作成しました。</p></section>
+          <div class="article-end">研究経過報告書 ・ Gr03</div>
+        </article>
+      </section>
+      <aside class="sidebar" aria-label="報告書一覧"><div class="sidebar-sticky"><div class="sidebar-heading"><span class="sidebar-heading-mark"></span><div><span class="section-kicker">ARCHIVE</span><h2>レポート一覧</h2></div></div><section class="archive-group"><div class="archive-title"><span class="archive-icon report-icon" aria-hidden="true">R</span><h3>研究経過報告書</h3></div><a class="archive-link" href="rpr_2026-11-26.html"><span class="archive-date">2026.11.26</span><span class="archive-label">性能測定結果の分析</span><span class="archive-arrow" aria-hidden="true">›</span></a></section></div></aside>
+    </main>
+  </div>
+</body>
+</html>
